@@ -11,6 +11,7 @@
 <link rel="preload" as="image" href="assets/worx-hero.jpg"/>
 <style>
   :root{ --ink:#111827; --muted:#6b7280; --bg:#ffffff; --panel:#f7f7f7; --beige:#cbb682; --ring:#e5e7eb; --beige-soft:#F9F6F0;}
+  [id]{ scroll-margin-top: 140px; }
   *{box-sizing:border-box} html{scroll-behavior:smooth}
   body{margin:0;color:var(--ink);background:var(--bg);font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.6;}
   header{border-bottom:1px solid var(--ring);background:#fff;position:sticky;top:0;z-index:20}
@@ -18,8 +19,25 @@
   .row{display:flex;align-items:center;gap:18px}
   .brand{font-family:Montserrat,system-ui,sans-serif;font-weight:700;font-size:22px}
   nav{margin-left:auto;display:flex;gap:26px;font-weight:600;letter-spacing:.2px}
-  nav a{color:var(--ink);text-decoration:none}
-  nav a.active{border-bottom:2px solid var(--beige);padding-bottom:4px}
+  nav a{
+    position: relative;
+    color:var(--ink);
+    text-decoration: none;
+  }
+  nav a::after{
+    content:"";
+    position:absolute;
+    left:0; bottom:-6px;
+    width:100%; height:2px;
+    background: var(--beige);
+    transform: scaleX(0);
+    transform-origin:left;
+    transition: transform .3s ease;
+  }
+  nav a:hover::after,
+  nav a.active::after{
+    transform: scaleX(1);
+  }
   .btn-outline{background:#fff;border:1px solid var(--ink);padding:10px 14px;border-radius:6px;font-weight:700;text-decoration:none;color:var(--ink)}
   .btn-primary{background:var(--beige);color:#fff;padding:10px 16px;border-radius:6px;font-weight:700;text-decoration:none}
   .hero-top{padding:52px 20px 28px;text-align:center}
@@ -62,13 +80,14 @@
   #quien{position:relative;background:var(--beige-soft)}
   #quien::before{content:"";position:absolute;inset:0;z-index:-1;box-shadow:0 0 0 100vmax var(--beige-soft);clip-path: inset(0 -100vmax);}
   /* Controles cuadrados, grises y centrados */
-  .carousel-controls{display:flex;justify-content:center;gap:.6rem;margin-top:.8rem}
-  .carousel-controls button{
-    width:40px;height:40px;display:grid;place-items:center;
-    background:#F3F4F6;border:1px solid var(--ring);color:var(--muted);
-    border-radius:8px;font-size:20px;line-height:1;cursor:pointer;
+  .carousel-controls{
+    display:flex; justify-content:center; gap:.6rem; margin-top:.6rem;
   }
-  .carousel-controls button:hover{background:#E9EDF1}
+  .carousel-controls button{
+    background:#fff; border:1px solid #d1d5db; color:#374151;
+    width:34px; height:34px; border-radius:6px; cursor:pointer;
+    font-weight:600;
+  }
 </style>
 
 <!-- Contact section style patch (scoped) -->
@@ -131,7 +150,6 @@
       <a href="#productos" aria-label="Ir a productos">PRODUCTOS</a>
       <a href="#acerca">PROPÓSITO</a>
       <a href="#quien">QUIÉN RECOMIENDA</a>
-     <a class="btn-outline" href="#contacto">CONTACTO</a>
     </nav>
   </div>
 </header>
@@ -254,22 +272,57 @@ if (new URLSearchParams(location.search).get('success') === '1'){
 document.getElementById('year').textContent = new Date().getFullYear();
 </script>
 <script>
-// Carrusel manual del destacado (sin autoplay) + controles centrados bajo la imagen
 (function(){
   const img = document.getElementById('hero-featured-img');
   if(!img) return;
-  const slides = [ img.getAttribute('src'), 'assets/worx-hero.jpg' ];
+  const slides = [ img.src, 'assets/worx-hero.jpg' ];
   let i = 0;
-  function show(n){ i = (n + slides.length) % slides.length; img.src = slides[i]; }
-  // Crear controles
-  const controls = document.createElement('div');
-  controls.className = 'carousel-controls';
-  controls.innerHTML = '<button type="button" id="prevFeat" aria-label="Imagen anterior">‹</button><button type="button" id="nextFeat" aria-label="Imagen siguiente">›</button>';
-  // Asegurar que están en la misma columna que la imagen
-  const wrap = img.closest('.media-wrap') || img.parentElement;
-  wrap.appendChild(controls);
-  document.getElementById('prevFeat').onclick = () => show(i - 1);
-  document.getElementById('nextFeat').onclick = () => show(i + 1);
+  function show(n){ i=(n+slides.length)%slides.length; img.src=slides[i]; }
+
+  // crea controles si no existen
+  if (!document.querySelector('.carousel-controls')) {
+    const controls = document.createElement('div');
+    controls.className = 'carousel-controls';
+    controls.innerHTML = '<button type="button" aria-label="Anterior">‹</button><button type="button" aria-label="Siguiente">›</button>';
+    img.insertAdjacentElement('afterend', controls);
+    const [prev,next] = controls.querySelectorAll('button');
+    prev.onclick = () => show(i-1);
+    next.onclick = () => show(i+1);
+  }
+})();
+</script>
+
+<script>
+(function(){
+  const navLinks = document.querySelectorAll('header nav a[href^="#"]');
+  const map = {};
+  navLinks.forEach(a => {
+    const id = a.getAttribute('href');
+    const sec = document.querySelector(id);
+    if (sec) map[id] = { link:a, sec };
+  });
+
+  // IntersectionObserver para activar enlace según sección visible
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      const id = '#'+entry.target.id;
+      if (!map[id]) return;
+      if (entry.isIntersecting) {
+        navLinks.forEach(l => l.classList.remove('active'));
+        map[id].link.classList.add('active');
+      }
+    });
+  }, { root:null, rootMargin:"-50% 0px -45% 0px", threshold:0 });
+
+  Object.values(map).forEach(({sec}) => obs.observe(sec));
+
+  // al hacer clic, marcar activo inmediatamente
+  navLinks.forEach(a=>{
+    a.addEventListener('click', ()=>{
+      navLinks.forEach(l => l.classList.remove('active'));
+      a.classList.add('active');
+    });
+  });
 })();
 </script>
 </body>
