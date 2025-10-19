@@ -2,13 +2,10 @@ backend:
   name: git-gateway
   branch: main
 
-media_folder: "images/uploads"      # dónde se guardan las imágenes en el repo
-public_folder: "/images/uploads"    # cómo se referencian desde la web
+media_folder: "images/uploads"
+public_folder: "/images/uploads"
 
-media_library:
-  name: "default"
-
-site_url: "https://recomendacionesgo2.netlify.app"
+publish_mode: simple
 
 collections:
   - name: "products"
@@ -17,13 +14,19 @@ collections:
     folder: "content/products"
     create: true
     slug: "{{slug}}"
-    editor:
-      preview: false
+    extension: "md"
+    format: "frontmatter"
     fields:
       - { label: "Nombre", name: "title", widget: "string" }
-      - { label: "Enlace Amazon", name: "amazon_url", widget: "string", hint: "Pega aquí tu enlace de afiliado" }
-      - { label: "Por qué lo recomiendo", name: "why", widget: "text", hint: "Máx. 250–300 caracteres" }
-      - { label: "Valoración (1–5)", name: "rating", widget: "number", min: 1, max: 5, step: 1, default: 5 }
-      - { label: "Imagen", name: "image", widget: "image", allow_multiple: false, choose_url: false }
-      - { label: "Destacado (sale en la sección grande)", name: "featured", widget: "boolean", default: false }
-      - { label: "Fecha", name: "date", widget: "datetime", format: "YYYY-MM-DD" }
+      - { label: "Categoría", name: "category", widget: "select", options: ["Reformas", "3D", "Electrodomésticos", "Herramientas", "Hogar", "Tecnología", "Otros"], default: "Herramientas" }
+      - { label: "Imagen principal (cuadrada 800×800)", name: "image", widget: "image", allow_multiple: false, hint: "Sube imagen cuadrada (800×800 recomendado)." }
+      - label: "Resumen (máx 250 caracteres)"
+        name: "summary"
+        widget: "text"
+        hint: "Texto corto que se mostrará como 'por qué lo recomiendo' (máx 250)."
+        pattern: ["^.{0,250}$", "Hasta 250 caracteres"]
+      - { label: "Enlace de compra (Amazon)", name: "buy_url", widget: "string", hint: "Pega aquí tu enlace completo o corto (amzn.to…)" }
+      - { label: "Por qué lo recomiendo (ampliado)", name: "why", widget: "markdown", required: false }
+      - { label: "Valoración (1–5 estrellas)", name: "rating", widget: "number", value_type: "int", min: 1, max: 5, default: 5 }
+      - { label: "Destacado (aparece en 'Producto destacado')", name: "featured", widget: "boolean", default: false }
+      - { label: "Fecha", name: "date", widget: "datetime", format: "YYYY-MM-DD", time_format: false }
