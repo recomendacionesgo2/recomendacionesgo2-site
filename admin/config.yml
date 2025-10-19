@@ -1,1 +1,29 @@
+backend:
+  name: git-gateway
+  branch: main
 
+media_folder: "images/uploads"      # dónde se guardan las imágenes en el repo
+public_folder: "/images/uploads"    # cómo se referencian desde la web
+
+media_library:
+  name: "default"
+
+site_url: "https://recomendacionesgo2.netlify.app"
+
+collections:
+  - name: "products"
+    label: "Productos"
+    label_singular: "Producto"
+    folder: "content/products"
+    create: true
+    slug: "{{slug}}"
+    editor:
+      preview: false
+    fields:
+      - { label: "Nombre", name: "title", widget: "string" }
+      - { label: "Enlace Amazon", name: "amazon_url", widget: "string", hint: "Pega aquí tu enlace de afiliado" }
+      - { label: "Por qué lo recomiendo", name: "why", widget: "text", hint: "Máx. 250–300 caracteres" }
+      - { label: "Valoración (1–5)", name: "rating", widget: "number", min: 1, max: 5, step: 1, default: 5 }
+      - { label: "Imagen", name: "image", widget: "image", allow_multiple: false, choose_url: false }
+      - { label: "Destacado (sale en la sección grande)", name: "featured", widget: "boolean", default: false }
+      - { label: "Fecha", name: "date", widget: "datetime", format: "YYYY-MM-DD" }
