@@ -70,6 +70,57 @@
   }
   .carousel-controls button:hover{background:#E9EDF1}
 </style>
+
+<!-- Contact section style patch (scoped) -->
+<style>
+/* ----- CONTACT SECTION FIX (scoped to #contacto) ----- */
+#contacto .contact{
+  max-width: 680px;
+  margin: 16px auto 0;
+  padding: 20px 20px;
+  background:#fff;
+  border:1px solid var(--ring);
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.03);
+}
+#contacto .contact .field{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  margin:10px 0;
+}
+#contacto .contact label{
+  font-weight: 600;
+  color: var(--ink);
+}
+#contacto .contact input,
+#contacto .contact textarea{
+  width:100%;
+  max-width:100%;
+  box-sizing:border-box;
+  padding:12px 14px;
+  border:1px solid var(--ring);
+  border-radius:8px;
+  font:inherit;
+  background:#fff;
+}
+#contacto .contact textarea{ min-height: 140px; resize: vertical; }
+#contacto .contact .submit{
+  margin-top:12px;
+  background: var(--beige);
+  color:#fff;
+  padding:12px 16px;
+  border:none;
+  border-radius:8px;
+  font-weight:700;
+  cursor:pointer;
+}
+#contacto .note{ color:#4b5563; }
+@media (max-width:720px){
+  #contacto .contact{ padding:16px; border-radius:8px; }
+}
+</style>
+
 </head>
 <body>
 <header>
