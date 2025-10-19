@@ -1,8 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /drafts/
-Disallow: /temp/
-Sitemap: https://recomendacionesgo2.netlify.app/sitemap.xml
-
-# robots.txt — Recomendaciones Go2
-# Permite la indexación general y bloquea carpetas internas no públicas.
