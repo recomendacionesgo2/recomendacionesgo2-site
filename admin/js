@@ -21,3 +21,37 @@
   CMS.registerPreviewStyle('/admin/preview.css');
   CMS.registerPreviewTemplate('products', ProductPreview);
 })();
+(function () {
+  // Swiper (el más habitual)
+  function stopSwiper() {
+    document.querySelectorAll('.swiper').forEach(function (el) {
+      const inst = el.swiper;
+      if (inst && inst.autoplay && typeof inst.autoplay.stop === 'function') {
+        try { inst.autoplay.stop(); } catch (e) {}
+      }
+    });
+  }
+
+  // Bootstrap Carousel (por si acaso)
+  function stopBootstrap() {
+    document.querySelectorAll('[data-bs-ride="carousel"], .carousel[data-ride="carousel"]').forEach(function (el) {
+      el.removeAttribute('data-bs-ride');
+      el.removeAttribute('data-ride');
+      // Detener si ya está en marcha
+      if (window.bootstrap && window.bootstrap.Carousel) {
+        try {
+          const c = bootstrap.Carousel.getInstance(el) || new bootstrap.Carousel(el, { interval: false, ride: false, pause: true, wrap: true });
+          c.pause && c.pause();
+        } catch (e) {}
+      }
+    });
+  }
+
+  // Ejecuta cuando el DOM esté listo
+  function run() { stopSwiper(); stopBootstrap(); }
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', run); } else { run(); }
+
+  // Por si el carrusel tarda en inicializarse
+  setTimeout(run, 800);
+  setTimeout(run, 2000);
+})();
