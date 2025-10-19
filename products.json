@@ -1,0 +1,28 @@
+{
+  "products": [
+    {
+      "title": "Taladro inalámbrico",
+      "subtitle": "Taladro potente y ligero.",
+      "image": "https://images.unsplash.com/photo-1587300003388-59208cc962cb?q=80&w=1600&auto=format&fit=crop",
+      "buy_url": "https://www.amazon.es/?tag=generaciono2-21",
+      "why": "Par alto y buena autonomía. Tras 45 días de uso diario, cero fallos.",
+      "rating": 5
+    },
+    {
+      "title": "Aspiradora robot",
+      "subtitle": "Limpieza automática y eficiente.",
+      "image": "https://images.unsplash.com/photo-1590340805250-2e6c0f1b2b2d?q=80&w=1600&auto=format&fit=crop",
+      "buy_url": "https://www.amazon.es/?tag=generaciono2-21",
+      "why": "Mapea bien, no se pierde y los recambios son económicos.",
+      "rating": 5
+    },
+    {
+      "title": "Cafetera espresso",
+      "subtitle": "Café de calidad en casa.",
+      "image": "https://images.unsplash.com/photo-1517705008128-361805f42e86?q=80&w=1600&auto=format&fit=crop",
+      "buy_url": "https://www.amazon.es/?tag=generaciono2-21",
+      "why": "Calienta rápido y da buen cuerpo.",
+      "rating": 5
+    }
+  ]
+}

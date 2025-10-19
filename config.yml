@@ -1,4 +1,3 @@
-
 backend:
   name: git-gateway
   branch: main
@@ -6,22 +5,24 @@ backend:
 media_folder: "images/uploads"
 public_folder: "/images/uploads"
 
-locale: "es"
+publish_mode: simple
 
 collections:
-  - name: "productos"
-    label: "Productos"
-    label_singular: "Producto"
-    folder: "content/products"
-    create: true
-    slug: "{{slug}}"
-    fields:
-      - { label: "Nombre", name: "title", widget: "string" }
-      - { label: "Descripción corta (máx 90)", name: "short", widget: "string", hint: "Se muestra en la tarjeta", pattern: [".{0,90}", "Máximo 90 caracteres"] }
-      - { label: "Por qué lo recomiendo (máx 250)", name: "why", widget: "text", hint: "Texto del botón 'Por qué lo recomiendo'", pattern: [".{0,250}", "Máximo 250 caracteres"] }
-      - { label: "Valoración (1–5)", name: "rating", widget: "number", value_type: "float", min: 1, max: 5, step: 0.5, default: 5 }
-      - { label: "Imagen (cuadrada 1080×1080)", name: "image", widget: "image", allow_multiple: false }
-      - { label: "URL Comprar en Amazon", name: "amazon_url", widget: "string" }
-      - { label: "Producto destacado (Carrusel 5★)", name: "featured", widget: "boolean", default: false }
-      - { label: "Categoría", name: "category", widget: "select", options: ["reformas", "hogar", "3D", "tecnologia", "otros"], default: "reformas" }
-      - { label: "Publicado", name: "published", widget: "boolean", default: true }
+  - name: "products_json"
+    label: "Productos (lista)"
+    files:
+      - file: "content/products/products.json"
+        label: "Listado de productos"
+        name: "products"
+        fields:
+          - label: "Productos"
+            name: "products"
+            widget: "list"
+            summary: "{{fields.title}}"
+            fields:
+              - { label: "Nombre", name: "title", widget: "string" }
+              - { label: "Descripción corta", name: "subtitle", widget: "string", required: false }
+              - { label: "Imagen (cuadrada)", name: "image", widget: "image" }
+              - { label: "Enlace de compra", name: "buy_url", widget: "string", required: false }
+              - { label: "Por qué lo recomiendo", name: "why", widget: "text", required: false }
+              - { label: "Valoración (1-5)", name: "rating", widget: "number", min: 1, max: 5, required: false }

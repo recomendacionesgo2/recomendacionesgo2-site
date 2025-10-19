@@ -1,44 +1,31 @@
-// Detecta qué sección está visible y activa el subrayado dorado en el menú
-(function () {
-  const nav = document.getElementById('mainNav');
-  if (!nav) return;
-  const links = Array.from(nav.querySelectorAll('a[href^="#"]'));
-  const map = new Map(
-    links.map(a => [a.getAttribute('href').replace('#','') || 'inicio', a])
-  );
-
-  const targets = links
-    .map(a => document.getElementById(a.getAttribute('href').replace('#','') || 'inicio'))
+// Moves the gold underline to the menu item that corresponds
+// to the section in view. Needs anchors: #inicio, #productos, #acerca, #quien
+(function(){
+  const map = {
+    inicio: document.querySelector('nav a[href="#inicio"]'),
+    productos: document.querySelector('nav a[href="#productos"]'),
+    acerca: document.querySelector('nav a[href="#acerca"]'),
+    quien: document.querySelector('nav a[href="#quien"]')
+  };
+  const sections = Object.keys(map)
+    .map(id => document.getElementById(id))
     .filter(Boolean);
 
-  // Quita el activo actual y aplica al nuevo
-  function setActive(id) {
-    links.forEach(a => a.classList.remove('active'));
-    const el = map.get(id);
-    if (el) el.classList.add('active');
-  }
+  if(!sections.length) return;
 
-  // Observador de intersección para secciones
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        setActive(entry.target.id || 'inicio');
+  let last = null;
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        const id = e.target.id;
+        if(map[id]){
+          if(last) last.classList.remove('is-active');
+          map[id].classList.add('is-active');
+          last = map[id];
+        }
       }
-    });
-  }, { rootMargin: "-40% 0px -55% 0px", threshold: 0.01 });
+    })
+  }, { rootMargin: "-40% 0px -45% 0px", threshold: 0.01 });
 
-  targets.forEach(t => io.observe(t));
-
-  // Al hacer click, hace scroll suave y deja activo correcto
-  links.forEach(a => {
-    a.addEventListener('click', (e) => {
-      const id = a.getAttribute('href').replace('#','') || 'inicio';
-      const target = document.getElementById(id);
-      if (target) {
-        e.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        setActive(id);
-      }
-    });
-  });
+  sections.forEach(s => obs.observe(s));
 })();
