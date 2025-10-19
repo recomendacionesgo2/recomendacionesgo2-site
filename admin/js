@@ -1,0 +1,23 @@
+// Muestra 1:1 o 16:9 en la vista previa según "featured"
+(function(){
+  function ProductPreview(props){
+    const entry   = props.entry;
+    const getAsset= props.getAsset;
+    const title   = entry.getIn(['data','title']);
+    const image   = entry.getIn(['data','image']);
+    const featured= entry.getIn(['data','featured']);
+    const summary = entry.getIn(['data','summary']);
+    const imgUrl  = image ? getAsset(image) : null;
+
+    return h('div',{className:'preview'},
+      h('div',{className: featured ? 'frame-16x9':'frame-1x1'},
+        imgUrl ? h('img',{src: imgUrl.toString()}) : h('div',{className:'empty'},'Sin imagen')
+      ),
+      h('h3',{}, title || 'Sin título'),
+      summary ? h('p',{className:'summary'}, summary) : null,
+      h('div',{className:'hint'}, featured ? 'Vista de DESTACADO (16:9)':'Vista de FICHA (1:1)')
+    );
+  }
+  CMS.registerPreviewStyle('/admin/preview.css');
+  CMS.registerPreviewTemplate('products', ProductPreview);
+})();
