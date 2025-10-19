@@ -1,0 +1,10 @@
+# ads.txt — Recomendaciones Go2
+# Declaración de vendedores autorizados de publicidad o enlaces de afiliados.
+
+# Amazon EU Associates Program (España)
+amazon.es, DIRECT
+
+# Nota:
+# Este dominio pertenece a la Asociación Go2 (https://recomendacionesgo2.netlify.app)
+# y participa únicamente en programas de afiliados verificados y gestionados directamente.
+# Si se añaden nuevas plataformas (Google Ads, Awin, etc.), deberán añadirse aquí.
