@@ -233,6 +233,17 @@
 <p>© <span id="year"></span> Recomendaciones Go2 — por Sebastián Ferragut</p>
 </div>
 </footer>
+<style>
+/* Flechas del carrusel destacado (debajo de la imagen) */
+.carousel-controls{
+  display:flex;justify-content:center;gap:.8rem;margin-top:.6rem
+}
+.carousel-controls button{
+  background:#fff;border:1px solid #d1d5db;color:#374151;
+  padding:.45rem .8rem;border-radius:6px;font-size:.95rem;cursor:pointer
+}
+.carousel-controls button:hover{background:#f3f4f6}
+</style>
 </main>
 <script>
     // success state from Netlify
@@ -243,15 +254,23 @@
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
 <script>
+// Carrusel manual del destacado (sin autoplay)
 (function(){
-  var img = document.getElementById('hero-featured-img');
+  const img = document.getElementById('hero-featured-img');
   if(!img) return;
-  var slides = [ img.getAttribute('src'), 'assets/worx-hero.jpg' ];
-  var i = 0;
-  setInterval(function(){
-    i = (i + 1) % slides.length;
-    img.setAttribute('src', slides[i]);
-  }, 6000);
+  const slides = [ img.getAttribute('src'), 'assets/worx-hero.jpg' ];
+  let i = 0;
+  function show(n){ i = (n + slides.length) % slides.length; img.src = slides[i]; }
+
+  // Controles bajo la imagen
+  const controls = document.createElement('div');
+  controls.className = 'carousel-controls';
+  controls.innerHTML = '<button type="button" id="prevFeat">‹ Anterior</button><button type="button" id="nextFeat">Siguiente ›</button>';
+  img.insertAdjacentElement('afterend', controls);
+
+  document.getElementById('prevFeat').onclick = () => show(i - 1);
+  document.getElementById('nextFeat').onclick = () => show(i + 1);
 })();
-</script></body>
+</script>
+</body>
 </html>
