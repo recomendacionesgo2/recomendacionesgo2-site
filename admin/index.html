@@ -25,5 +25,57 @@
       });
     }
   </script>
-</body>
+<style>
+/* 🔹 Flechas debajo del carrusel */
+.carousel-manual-controls {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 0.8rem;
+}
+.carousel-manual-controls button {
+  background: #fff;
+  border: 1px solid #ccc;
+  color: #444;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+.carousel-manual-controls button:hover {
+  background: #f3f3f3;
+}
+</style>
+
+<script>
+(function(){
+  const slides = document.querySelectorAll('.carousel img, .hero img, .slider img'); // busca imágenes comunes
+  if (!slides.length) return;
+
+  let current = 0;
+  slides.forEach((img,i) => img.style.display = i === 0 ? 'block' : 'none');
+
+  function show(n) {
+    slides[current].style.display = 'none';
+    current = (n + slides.length) % slides.length;
+    slides[current].style.display = 'block';
+  }
+
+  // elimina intervalos automáticos que estuvieran activos
+  for (let id = 1; id < 1000; id++) clearInterval(id);
+
+  // crea las flechas debajo del carrusel
+  const controls = document.createElement('div');
+  controls.className = 'carousel-manual-controls';
+  controls.innerHTML = `
+    <button id="prevSlide">‹ Anterior</button>
+    <button id="nextSlide">Siguiente ›</button>
+  `;
+  document.body.appendChild(controls);
+
+  document.getElementById('prevSlide').onclick = () => show(current - 1);
+  document.getElementById('nextSlide').onclick = () => show(current + 1);
+})();
+</script>
+  </body>
 </html>
