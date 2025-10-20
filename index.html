@@ -158,6 +158,34 @@
 #destacado .trust > div:nth-of-type(2){
   transform: translateY(22px); /* si ya estaba, respetar */
 }
+
+/* Deja una separación bajo la imagen para las flechas */
+#destacado .trust .hero-frame{
+  margin-bottom: clamp(12px, 1.5vw, 18px);
+}
+
+/* Asegura que el contenedor del bloque tenga hueco de sobra abajo */
+@media (min-width: 768px){
+  #destacado .trust{
+    padding-bottom: 88px !important; /* antes 60px */
+  }
+}
+
+/* Flechas: centradas, con pequeña separación, y por encima de cualquier overlay */
+#destacado .carousel-controls{
+  display: flex;
+  justify-content: center;
+  gap: .6rem;
+  margin-top: .25rem;
+  position: relative;
+  z-index: 3;
+}
+
+/* Botones de flecha clicables por encima de la imagen */
+#destacado .carousel-controls button{
+  position: relative;
+  z-index: 4;
+}
 </style>
 
 <!-- Contact section style patch (scoped) -->
