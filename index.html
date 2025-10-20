@@ -125,6 +125,39 @@
     transform: translateY(22px); /* ajusta este valor si hace falta */
     will-change: transform;
   }
+
+/* Marco vertical fijo 4:5 para el destacado */
+#destacado .trust .hero-frame{
+  width:100%;
+  aspect-ratio: 4 / 5;        /* igual que el reloj */
+  overflow:hidden;
+  border-radius:8px;
+  background:#fff;            /* para las bandas si usamos contain */
+}
+
+/* Modo por defecto: recorta de los lados (apaisadas) sin deformar */
+#destacado .trust .hero-frame img{
+  width:100%;
+  height:100%;
+  object-fit: cover;
+  display:block;
+}
+
+/* Si la imagen es apaisada, activamos contain con bandas arriba/abajo */
+#destacado .trust .hero-frame.contain img{
+  object-fit: contain;
+  background:#fff;
+}
+
+/* Mantener los ajustes aprobados del bloque */
+#destacado .trust{
+  padding-top:0 !important;
+  margin-top:-55px !important;
+  padding-bottom:60px !important;
+}
+#destacado .trust > div:nth-of-type(2){
+  transform: translateY(22px); /* si ya estaba, respetar */
+}
 </style>
 
 <!-- Contact section style patch (scoped) -->
@@ -201,7 +234,9 @@
   <div class="band featured" id="destacado">
     <section class="trust">
       <div class="media-wrap">
-        <img id="hero-featured-img" alt="Producto destacado" src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?q=80&w=1600&auto=format&fit=crop"/>
+        <div class="hero-frame">
+          <img id="hero-featured-img" alt="Producto destacado" src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?q=80&w=1600&auto=format&fit=crop"/>
+        </div>
         <!-- Controles se insertan por JS también por si faltara este bloque -->
       </div>
       <div>
@@ -297,7 +332,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
   if(!img) return;
   const slides = [ img.src, '/images/uploads/diseño-sin-título-2-.png' ];
   let i = 0;
-  function show(n){ i=(n+slides.length)%slides.length; img.src=slides[i]; }
+  function show(n){ i=(n+slides.length)%slides.length; img.src=slides[i]; if(window.__applyHeroFitMode) window.__applyHeroFitMode(); }
 
   // crea controles si no existen
   if (!document.querySelector('.carousel-controls')) {
@@ -309,6 +344,31 @@ document.getElementById('year').textContent = new Date().getFullYear();
     prev.onclick = () => show(i-1);
     next.onclick = () => show(i+1);
   }
+})();
+</script>
+
+<script>
+(function(){
+  var img = document.getElementById('hero-featured-img');
+  if(!img) return;
+
+  function applyFitMode() {
+    // Esperar a que tenga dimensiones reales
+    var w = img.naturalWidth, h = img.naturalHeight;
+    if(!w || !h) { setTimeout(applyFitMode, 50); return; }
+    // Si es claramente apaisada, poner bandas arriba/abajo (contain)
+    var isWide = (w / h) > 1.05;  // umbral suave
+    var frame = img.parentElement;
+    if(!frame) return;
+    frame.classList.toggle('contain', isWide);
+  }
+
+  // Ejecutar al cargar y cuando se cambie de slide
+  img.addEventListener('load', applyFitMode);
+  applyFitMode();
+
+  // Si tu carrusel cambia el src con una función externa, seguimos cubiertos:
+  window.__applyHeroFitMode = applyFitMode;
 })();
 </script>
 
