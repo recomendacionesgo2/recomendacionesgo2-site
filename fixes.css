@@ -7,3 +7,5 @@
   position: relative;
   top: 40px; /* baja texto y botón sin afectar imagen ni flechas */
 }
+
+#destacado .trust .hero-frame { padding-top: 50px !important; }
