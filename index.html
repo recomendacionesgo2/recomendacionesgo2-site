@@ -470,23 +470,23 @@ document.getElementById('year').textContent = new Date().getFullYear();
 })();
 </script>
 <script>
+  const PRODUCT_SLUGS = [
+    "taladro-de-precision-bosch-gsr-12v",
+    "worx-taladro"
+  ];
+</script>
+<script>
   (async function(){
     var cards = document.getElementById('productCards');
     var msg   = document.getElementById('emptyProductsMsg');
     if(!cards || !msg) return;
 
     try {
-      const res = await fetch('/content/products/');
-      const html = await res.text();
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(html, 'text/html');
-      const links = Array.from(doc.querySelectorAll('a[href$=".md"]'))
-        .map(a => '/content/products/' + a.getAttribute('href'));
-
       const products = [];
       
-      for (const mdUrl of links) {
+      for (const slug of PRODUCT_SLUGS) {
         try {
+          const mdUrl = `/content/products/${slug}.md`;
           const mdRes = await fetch(mdUrl);
           const mdText = await mdRes.text();
           
@@ -505,9 +505,6 @@ document.getElementById('year').textContent = new Date().getFullYear();
           const getWhy = fm.match(/^why:\s*(.+)$/m);
           const getRating = fm.match(/^rating:\s*([\d.]+)$/m);
           const getFeatured = fm.match(/^featured:\s*(.+)$/m);
-          const getDate = fm.match(/^date:\s*(.+)$/m);
-          
-          const slug = mdUrl.split('/').pop().replace('.md', '');
           
           products.push({
             slug,
@@ -518,11 +515,10 @@ document.getElementById('year').textContent = new Date().getFullYear();
             buyUrl: getBuyUrl ? getBuyUrl[1].trim() : '#',
             why: getWhy ? getWhy[1].trim() : '',
             rating: getRating ? parseFloat(getRating[1]) : 0,
-            featured: getFeatured ? getFeatured[1].trim() === 'true' : false,
-            date: getDate ? getDate[1].trim() : ''
+            featured: getFeatured ? getFeatured[1].trim() === 'true' : false
           });
         } catch (e) {
-          console.error('Error loading product:', mdUrl, e);
+          console.error('Error loading product:', slug, e);
         }
       }
       
@@ -536,22 +532,17 @@ document.getElementById('year').textContent = new Date().getFullYear();
       let featuredId = null;
       let topRatedProduct = null;
       
-      products.forEach(p => {
+      products.forEach((p, idx) => {
         if (p.featured && !featuredId) {
           featuredId = 'prod-' + p.slug;
         }
         if (!topRatedProduct || p.rating > topRatedProduct.rating || 
-            (p.rating === topRatedProduct.rating && p.date > topRatedProduct.date)) {
+            (p.rating === topRatedProduct.rating && idx < products.indexOf(topRatedProduct))) {
           topRatedProduct = p;
         }
       });
       
       const topRatedId = topRatedProduct ? 'prod-' + topRatedProduct.slug : null;
-      
-      products.sort((a, b) => {
-        if (b.date && a.date) return b.date.localeCompare(a.date);
-        return 0;
-      });
       
       cards.innerHTML = '';
       
