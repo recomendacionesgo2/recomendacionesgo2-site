@@ -279,7 +279,10 @@
         <div class="hero-frame">
           <img id="hero-featured-img" alt="Producto destacado" src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?q=80&w=1600&auto=format&fit=crop"/>
         </div>
-        <!-- Controles se insertan por JS también por si faltara este bloque -->
+        <div class="carousel-controls" id="featControls">
+          <button type="button" id="featPrev" aria-label="Anterior">‹</button>
+          <button type="button" id="featNext" aria-label="Siguiente">›</button>
+        </div>
       </div>
       <div>
         <div class="eyebrow">SECCIÓN 5 ESTRELLAS</div>
@@ -376,6 +379,9 @@ document.getElementById('year').textContent = new Date().getFullYear();
   let i = 0;
   function show(n){ i=(n+slides.length)%slides.length; img.src=slides[i]; if(window.__applyHeroFitMode) window.__applyHeroFitMode(); }
 
+  // Exponer la función para que los botones externos puedan usarla
+  window.__featShow = show;
+
   // crea controles si no existen
   if (!document.querySelector('.carousel-controls')) {
     const controls = document.createElement('div');
@@ -471,6 +477,21 @@ document.getElementById('year').textContent = new Date().getFullYear();
       }
     });
   })();
+</script>
+<script>
+(function(){
+  // Preferimos usar la función expuesta si existe
+  function go(delta){
+    if (window.__featShow) { window.__featShow(delta); return; }
+    // Fallback: si no existe __featShow pero hay una función global show(n), intenta usarla
+    if (typeof window.__localFeatShow === 'function') { window.__localFeatShow(delta); }
+  }
+
+  var prev = document.getElementById('featPrev');
+  var next = document.getElementById('featNext');
+  if (prev) prev.addEventListener('click', function(){ go(-1); });
+  if (next) next.addEventListener('click', function(){ go(1); });
+})();
 </script>
 </body>
 </html>
