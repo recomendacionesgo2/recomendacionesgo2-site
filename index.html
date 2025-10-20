@@ -171,20 +171,34 @@
   }
 }
 
-/* Flechas: centradas, con pequeña separación, y por encima de cualquier overlay */
+/* Asegurar visibilidad y estilo correcto de las flechas del carrusel */
 #destacado .carousel-controls{
   display: flex;
   justify-content: center;
-  gap: .6rem;
-  margin-top: .25rem;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.25rem;
   position: relative;
-  z-index: 3;
+  z-index: 5;                /* siempre encima de la imagen y fondo */
 }
 
-/* Botones de flecha clicables por encima de la imagen */
 #destacado .carousel-controls button{
-  position: relative;
-  z-index: 4;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: transparent;
+  border: 1px solid #d1d5db; /* gris claro */
+  color: #6b7280;            /* gris medio */
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 6;
+  transition: all 0.2s ease;
+}
+
+#destacado .carousel-controls button:hover{
+  background: #e5e7eb;       /* gris claro al pasar el cursor */
+  color: #374151;            /* gris oscuro */
 }
 </style>
 
