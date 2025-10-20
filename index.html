@@ -8,7 +8,6 @@
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-<link rel="preload" as="image" href="assets/worx-hero.jpg"/>
 <style>
   :root{ --ink:#111827; --muted:#6b7280; --bg:#ffffff; --panel:#f7f7f7; --beige:#cbb682; --ring:#e5e7eb; --beige-soft:#F9F6F0;}
   [id]{ scroll-margin-top: 70px; }
@@ -231,37 +230,11 @@
   <section id="productos" class="section">
     <div class="kicker">RECOMENDACIONES DE CALIDAD</div>
     <h3>Descubre productos que valen la pena</h3>
+    <p id="empty-state" style="text-align:center;color:#6b7280;margin:24px 0 8px;font-size:14px">
+      Aún no hay productos. Añade el primero desde <a href="/admin" style="color:#6b7280;text-decoration:underline">/admin</a>.
+    </p>
     <div class="cards">
-      <article class="card" id="worx-destacado" data-stars="4.8">
-        <img class="thumb" alt="Taladro inalámbrico 18V" src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?q=80&w=1600&auto=format&fit=crop"/>
-        <div class="pad">
-          <h4>Taladro inalámbrico</h4>
-          <div class="sub">Taladro potente y ligero.</div>
-          <a class="buy" href="https://www.amazon.es/?tag=generaciono2-21" target="_blank" rel="nofollow noopener">Comprar en Amazon</a>
-          <a class="why" href="#razon-taladro" data-open="razon-taladro">Ver por qué lo recomiendo</a>
-          <div id="razon-taladro" class="reason">Par alto y buena autonomía. Tras 45 días de uso diario, cero fallos. Batería compatible y soporte posventa ágil.</div>
-        </div>
-      </article>
-      <article class="card" data-stars="4.6">
-        <img class="thumb" alt="Aspiradora robot" src="https://images.unsplash.com/photo-1590340805250-2e6c0f1b2b2d?q=80&w=1600&auto=format&fit=crop"/>
-        <div class="pad">
-          <h4>Aspiradora robot</h4>
-          <div class="sub">Limpieza automática y eficiente.</div>
-          <a class="buy" href="https://www.amazon.es/?tag=generaciono2-21" target="_blank" rel="nofollow noopener">Comprar en Amazon</a>
-          <a class="why" href="#razon-robot" data-open="razon-robot">Ver por qué lo recomiendo</a>
-          <div id="razon-robot" class="reason">Mapea bien, no se pierde y los recambios son económicos. Batería suficiente para un piso de 70 m².</div>
-        </div>
-      </article>
-      <article class="card" data-stars="4.7">
-        <img class="thumb" alt="Cafetera espresso" src="https://images.unsplash.com/photo-1517705008128-361805f42e86?q=80&w=1600&auto=format&fit=crop"/>
-        <div class="pad">
-          <h4>Cafetera espresso</h4>
-          <div class="sub">Café de calidad en casa.</div>
-          <a class="buy" href="https://www.amazon.es/?tag=generaciono2-21" target="_blank" rel="nofollow noopener">Comprar en Amazon</a>
-          <a class="why" href="#razon-cafe" data-open="razon-cafe">Ver por qué lo recomiendo</a>
-          <div id="razon-cafe" class="reason">Calienta rápido, buen cuerpo y vaporizador estable. Componentes robustos y mantenimiento sencillo.</div>
-        </div>
-      </article>
+      <!-- productos se añadirán desde /admin -->
     </div>
   </section>
 
@@ -313,7 +286,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
 (function(){
   const img = document.getElementById('hero-featured-img');
   if(!img) return;
-  const slides = [ img.src, 'assets/worx-hero.jpg' ];
+  const slides = [ img.src ];
   let i = 0;
   function show(n){ i=(n+slides.length)%slides.length; img.src=slides[i]; }
 
