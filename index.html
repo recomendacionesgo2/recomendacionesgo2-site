@@ -230,12 +230,10 @@
   <section id="productos" class="section">
     <div class="kicker">RECOMENDACIONES DE CALIDAD</div>
     <h3>Descubre productos que valen la pena</h3>
-    <p id="empty-state" style="text-align:center;color:#6b7280;margin:24px 0 8px;font-size:14px">
+    <p id="emptyProductsMsg" style="text-align:center;color:#6b7280;margin:24px 0 8px;font-size:14px">
       Aún no hay productos. Añade el primero desde <a href="/admin" style="color:#6b7280;text-decoration:underline">/admin</a>.
     </p>
-    <div class="cards">
-      <!-- productos se añadirán desde /admin -->
-    </div>
+    <div class="cards" id="productCards"></div>
   </section>
 
   <section id="acerca" class="social-purpose" aria-label="Transparencia y propósito social">
@@ -335,6 +333,15 @@ document.getElementById('year').textContent = new Date().getFullYear();
     });
   });
 })();
+</script>
+<script>
+  (function(){
+    var cards = document.getElementById('productCards');
+    var msg   = document.getElementById('emptyProductsMsg');
+    if(!cards || !msg) return;
+    // Muestra el aviso solo si NO hay tarjetas dentro del contenedor real
+    msg.style.display = cards.children.length ? 'none' : 'block';
+  })();
 </script>
 </body>
 </html>
