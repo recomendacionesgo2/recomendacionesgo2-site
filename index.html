@@ -46,7 +46,7 @@
   .label{font-size:12px;letter-spacing:.15em;color:#555;}
   h1,h2,h3{font-family:Montserrat,system-ui,sans-serif;margin:0}
   .hero-top h1{font-size:40px;margin:10px 0 16px}
-  .band{background:#fafafa;border-top:1px solid var(--ring);border-bottom:1px solid var(--ring)}
+  .band{background:#fafafa;border-top:1px solid var(--ring);border-bottom:1px solid var(--ring);padding-top:8px !important;padding-bottom:8px !important}
   .featured, .section-5{padding-top:92px;padding-bottom:60px}
   .trust{max-width:1120px;margin:0 auto;padding:48px 20px;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;position:relative}
   .trust img{width:100%;border-radius:4px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
@@ -91,11 +91,35 @@
     width:34px; height:34px; border-radius:6px; cursor:pointer;
     font-weight:600;
   }
-  /* Sube el bloque destacado 1 cm más */
+  /* Revertir centrado en SECCIÓN 5 ESTRELLAS y volver a alineación izquierda */
   #destacado .trust{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;  /* vuelve a su posición original */
     padding-top: 0px !important;
-    margin-top: -55px !important;   /* sube más que antes */
+    margin-top: -55px !important;
     padding-bottom: 60px !important;
+  }
+  #destacado .trust img{
+    justify-self: start;  /* vuelve a alineación izquierda */
+  }
+  #destacado .trust .eyebrow,
+  #destacado .trust h2,
+  #destacado .trust p{
+    text-align: left; /* elimina centrado */
+    margin-left: 0;
+    margin-right: 0;
+  }
+  #destacado .trust a.btn-primary{
+    display: inline-block;
+    margin-left: 0;
+    margin-right: 0;
+  }
+  /* Ajuste fino: bajar ligeramente el contenido interno sin alterar diseño */
+  #destacado .trust > img,
+  #destacado .trust > div{
+    position: relative;
+    top: 57px; /* sube un poco más respecto a la versión anterior */
   }
 </style>
 
