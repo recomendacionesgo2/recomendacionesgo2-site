@@ -3,7 +3,7 @@ title: Nivel Láser Autonivelante
 category: Herramientas
 image: /images/uploads/captura-de-pantalla-2025-10-20-a-las-20.26.24.png
 summary: Nivel Láser Autonivelante
-buy_url: https://amzn.to/3WzZVGd
+buy_url: https://amzn.to/3WA168B
 why: Hace casi dos meses que lo tengo y me parece perfecto, sobre todo por el
   tamaño. Me lo llevo muchas veces para trabajos rápidos como colgar cuadros o
   espejos. Tengo otros niveles, pero son más aparatosos. Este es compacto, cabe
