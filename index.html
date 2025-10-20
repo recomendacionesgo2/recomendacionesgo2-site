@@ -307,8 +307,8 @@
           <img id="hero-featured-img" alt="Producto destacado" src="/images/uploads/hero-5estrellas.png"/>
         </div>
         <div class="carousel-controls" id="featControls">
-          <button type="button" id="featPrev" aria-label="Anterior">‹</button>
-          <button type="button" id="featNext" aria-label="Siguiente">›</button>
+          <button type="button" id="prevFeat" aria-label="Anterior">‹</button>
+          <button type="button" id="nextFeat" aria-label="Siguiente">›</button>
         </div>
       </div>
       <div>
@@ -386,29 +386,6 @@ if (new URLSearchParams(location.search).get('success') === '1'){
   const ok = document.getElementById('ok'); if(ok) ok.style.display = 'block';
 }
 document.getElementById('year').textContent = new Date().getFullYear();
-</script>
-<script>
-(function(){
-  const img = document.getElementById('hero-featured-img');
-  if(!img) return;
-  const slides = [ img.src, '/images/uploads/diseño-sin-título-2-.png' ];
-  let i = 0;
-  function show(n){ i=(n+slides.length)%slides.length; img.src=slides[i]; if(window.__applyHeroFitMode) window.__applyHeroFitMode(); }
-
-  // Exponer la función para que los botones externos puedan usarla
-  window.__featShow = show;
-
-  // crea controles si no existen
-  if (!document.querySelector('.carousel-controls')) {
-    const controls = document.createElement('div');
-    controls.className = 'carousel-controls';
-    controls.innerHTML = '<button type="button" aria-label="Anterior">‹</button><button type="button" aria-label="Siguiente">›</button>';
-    img.insertAdjacentElement('afterend', controls);
-    const [prev,next] = controls.querySelectorAll('button');
-    prev.onclick = () => show(i-1);
-    next.onclick = () => show(i+1);
-  }
-})();
 </script>
 
 <script>
@@ -527,26 +504,128 @@ document.getElementById('year').textContent = new Date().getFullYear();
       }
     });
 
-    // Lógica del botón "Ver producto destacado"
-    const featured = items.find(p => p.featured);
-    let target = featured || items.slice().sort((a,b) => {
-      if (b.rating !== a.rating) return b.rating - a.rating;
-      // si empatan, usa la fecha más reciente si existe
-      return (b.date || '').localeCompare(a.date || '');
-    })[0];
-
-    const btn = Array.from(document.querySelectorAll('a,button'))
-      .find(el => el.textContent && el.textContent.trim() === 'Ver producto destacado');
-    if (btn && target) {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const node = document.getElementById(`prod-${target.slug}`);
-        if (node) node.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
-    }
+    // Guardar productos en variable global para otros scripts
+    window.__products = items;
   } catch (e) {
     console.error('Error cargando productos:', e);
     if (emptyNote) emptyNote.style.display = 'block';
+  }
+})();
+</script>
+<script>
+(function(){
+  // Espera utilidades
+  function waitFor(cond, timeout=8000, interval=60){
+    return new Promise((res, rej)=>{
+      const t0 = Date.now();
+      (function loop(){
+        try{
+          if (cond()) return res(true);
+        }catch(_){}
+        if (Date.now() - t0 > timeout) return rej(new Error('timeout'));
+        setTimeout(loop, interval);
+      })();
+    });
+  }
+
+  // Arranque robusto: espera productos, imagen del carrusel y la rejilla
+  waitFor(()=> window.__products && document.querySelector('#destacado .hero-frame img') && document.querySelector('.cards'))
+  .then(init)
+  .catch(()=>{ /* no hacemos nada si no llega */ });
+
+  function init(){
+    const img = document.querySelector('#destacado .hero-frame img');
+    if (!img) return;
+
+    // Botón por texto exacto (no cambiar HTML)
+    const btnDest = Array.from(document.querySelectorAll('a,button'))
+      .find(el => el.textContent && el.textContent.trim() === 'Ver producto destacado');
+
+    // Localiza flechas: ids (#prevFeat/#nextFeat) o las 2 primeras de .carousel-controls
+    let prev = document.getElementById('prevFeat');
+    let next = document.getElementById('nextFeat');
+
+    if (!prev || !next){
+      const ctrl = document.querySelector('.carousel-controls');
+      if (ctrl){
+        const btns = ctrl.querySelectorAll('button');
+        if (btns.length >= 2){ prev = btns[0]; next = btns[1]; }
+      }
+    }
+
+    // Si no hay flechas, créalas no-invasivas (respetando estilos existentes)
+    if (!prev || !next){
+      const ctrl = document.querySelector('.carousel-controls') || (function(){
+        const div = document.createElement('div');
+        div.className = 'carousel-controls';
+        img.parentElement.appendChild(div);
+        return div;
+      })();
+      if (!prev){
+        prev = document.createElement('button');
+        prev.id = 'prevFeat';
+        prev.type = 'button';
+        prev.textContent = '‹';
+        ctrl.appendChild(prev);
+      }
+      if (!next){
+        next = document.createElement('button');
+        next.id = 'nextFeat';
+        next.type = 'button';
+        next.textContent = '›';
+        ctrl.appendChild(next);
+      }
+    }
+
+    // Fuente de datos
+    const items = (window.__products || []).slice();
+
+    // Slides = featured verdaderos con imagen/slug válido
+    let slides = items
+      .filter(p => !!p.featured && p.image && p.slug)
+      .map(p => ({ src: p.image, targetId: `prod-${p.slug}` }));
+
+    // Fallback: si no hay featured, usa el mejor valorado (y si empatan, el más reciente)
+    if (!slides.length && items.length){
+      const top = items.slice().sort((a,b)=>{
+        if (b.rating !== a.rating) return b.rating - a.rating;
+        return (b.date || '').localeCompare(a.date || '');
+      })[0];
+      if (top && top.image && top.slug){
+        slides = [{ src: top.image, targetId: `prod-${top.slug}` }];
+      }
+    }
+
+    if (!slides.length) return; // nada que mostrar
+
+    // Preload rápido
+    slides.forEach(s => { const im = new Image(); im.src = s.src; });
+
+    let i = 0;
+    let currentTargetId = slides[i].targetId;
+
+    function show(n){
+      i = (n + slides.length) % slides.length;
+      img.src = slides[i].src;
+      currentTargetId = slides[i].targetId;
+      if (btnDest) btnDest.setAttribute('href', `#${currentTargetId}`);
+    }
+
+    // Inicializa
+    show(0);
+
+    // Clicks flechas
+    if (prev) prev.onclick = e => { e.preventDefault(); show(i - 1); };
+    if (next) next.onclick = e => { e.preventDefault(); show(i + 1); };
+
+    // Botón -> scroll a la tarjeta visible
+    if (btnDest){
+      btnDest.addEventListener('click', (e)=>{
+        e.preventDefault();
+        const node = document.getElementById(currentTargetId);
+        if (node) node.scrollIntoView({ behavior:'smooth', block:'start' });
+      });
+    }
   }
 })();
 </script>
@@ -565,21 +644,6 @@ document.getElementById('year').textContent = new Date().getFullYear();
       }
     });
   })();
-</script>
-<script>
-(function(){
-  // Preferimos usar la función expuesta si existe
-  function go(delta){
-    if (window.__featShow) { window.__featShow(delta); return; }
-    // Fallback: si no existe __featShow pero hay una función global show(n), intenta usarla
-    if (typeof window.__localFeatShow === 'function') { window.__localFeatShow(delta); }
-  }
-
-  var prev = document.getElementById('featPrev');
-  var next = document.getElementById('featNext');
-  if (prev) prev.addEventListener('click', function(){ go(-1); });
-  if (next) next.addEventListener('click', function(){ go(1); });
-})();
 </script>
 </body>
 </html>
