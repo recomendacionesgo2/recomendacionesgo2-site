@@ -1,5 +1,5 @@
 ---
-title: Taladro de precisión Bosch GSR 12V
+title: Taladro de precisión Bosch GSR
 category: Herramientas
 image: /images/uploads/captura-de-pantalla-2025-10-20-a-las-5.32.14.png
 summary: Potente, compacto y con batería duradera
