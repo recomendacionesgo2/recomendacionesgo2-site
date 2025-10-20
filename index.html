@@ -580,35 +580,35 @@ document.getElementById('year').textContent = new Date().getFullYear();
     // Fuente de datos
     const items = (window.__products || []).slice();
 
-    // 1) Construir slides: guía primero + featured después
-    const instructionSrc =
-      img.getAttribute('src') || '/images/uploads/hero-5estrellas.png';
+// 1) Construir slides: guía primero + featured después
+const instructionSrc =
+  img.getAttribute('src') || '/images/uploads/hero-5estrellas.png';
 
-    const featuredSlides = items
-      .filter(p => !!p.featured && p.image && p.slug)
-      .map(p => ({ src: p.image, targetId: `prod-${p.slug}` }));
+const featuredSlides = items
+  .filter(p => !!p.featured && p.image && p.slug)
+  .map(p => ({ src: p.image, targetId: `prod-${p.slug}` }));
 
-    // Fallback por si no hay featured: usa top rated
-    if (!featuredSlides.length && items.length){
-      const top = items.slice().sort((a,b)=>{
-        if (b.rating !== a.rating) return b.rating - a.rating;
-        return (b.date || '').localeCompare(a.date || '');
-      })[0];
-      if (top && top.image && top.slug){
-        featuredSlides.push({ src: top.image, targetId: `prod-${top.slug}` });
-      }
-    }
+// Fallback por si no hay featured: usa top rated
+if (!featuredSlides.length && items.length){
+  const top = items.slice().sort((a,b)=>{
+    if (b.rating !== a.rating) return b.rating - a.rating;
+    return (b.date || '').localeCompare(a.date || '');
+  })[0];
+  if (top && top.image && top.slug){
+    featuredSlides.push({ src: top.image, targetId: `prod-${top.slug}` });
+  }
+}
 
-    // La guía SIEMPRE primero
-    let slides = [];
-    if (instructionSrc) {
-      // La guía apunta al primer featured si existe; si no, no apunta a nada
-      slides.push({
-        src: instructionSrc,
-        targetId: featuredSlides[0]?.targetId || null
-      });
-    }
-    slides = slides.concat(featuredSlides);
+// La guía SIEMPRE primero
+let slides = [];
+if (instructionSrc) {
+  // La guía apunta al primer featured si existe; si no, no apunta a nada
+  slides.push({
+    src: instructionSrc,
+    targetId: featuredSlides[0]?.targetId || null
+  });
+}
+slides = slides.concat(featuredSlides);
 
     // Si no hay nada que mostrar, salimos
     if (!slides.length) return;
@@ -633,27 +633,27 @@ document.getElementById('year').textContent = new Date().getFullYear();
     if (prev) prev.onclick = e => { e.preventDefault(); show(i - 1); };
     if (next) next.onclick = e => { e.preventDefault(); show(i + 1); };
 
-    // 2) Botón "Ver producto destacado"
-    if (btnDest){
-      btnDest.addEventListener('click', (e)=>{
-        e.preventDefault();
-        // Si estamos en la guía y hay featured, pasa al primero y luego hace scroll
-        if (!currentTargetId && featuredSlides.length){
-          show(1 % slides.length); // avanza desde la guía al 1º featured
-          // Pequeño delay para asegurar pintura de imagen
-          setTimeout(()=>{
-            const node = document.getElementById(slides[i].targetId);
-            if (node) node.scrollIntoView({ behavior:'smooth', block:'start' });
-          }, 50);
-          return;
-        }
-        // Si ya estamos en un featured, scroll directo
-        if (currentTargetId){
-          const node = document.getElementById(currentTargetId);
-          if (node) node.scrollIntoView({ behavior:'smooth', block:'start' });
-        }
-      });
+// 2) Botón "Ver producto destacado"
+if (btnDest){
+  btnDest.addEventListener('click', (e)=>{
+    e.preventDefault();
+    // Si estamos en la guía y hay featured, pasa al primero y luego hace scroll
+    if (!currentTargetId && featuredSlides.length){
+      show(1 % slides.length); // avanza desde la guía al 1º featured
+      // Pequeño delay para asegurar pintura de imagen
+      setTimeout(()=>{
+        const node = document.getElementById(slides[i].targetId);
+        if (node) node.scrollIntoView({ behavior:'smooth', block:'start' });
+      }, 50);
+      return;
     }
+    // Si ya estamos en un featured, scroll directo
+    if (currentTargetId){
+      const node = document.getElementById(currentTargetId);
+      if (node) node.scrollIntoView({ behavior:'smooth', block:'start' });
+    }
+  });
+}
   }
 })();
 </script>
