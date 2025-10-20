@@ -337,10 +337,10 @@
   <section id="productos" class="section">
     <div class="kicker">RECOMENDACIONES DE CALIDAD</div>
     <h3>Descubre productos que valen la pena</h3>
-    <p id="emptyProductsMsg" style="text-align:center;color:#6b7280;margin:24px 0 8px;font-size:14px">
+    <p id="emptyProductsMsg" data-products-empty style="text-align:center;color:#6b7280;margin:24px 0 8px;font-size:14px">
       Aún no hay productos. Añade el primero desde <a href="/admin" style="color:#6b7280;text-decoration:underline">/admin</a>.
     </p>
-    <div class="cards" id="productCards"></div>
+    <div class="cards"></div>
   </section>
 
   <section id="acerca" class="social-purpose" aria-label="Transparencia y propósito social">
@@ -470,137 +470,64 @@ document.getElementById('year').textContent = new Date().getFullYear();
 })();
 </script>
 <script>
-  const PRODUCT_SLUGS = [
-    "taladro-de-precision-bosch-gsr-12v",
-    "worx-taladro"
-  ];
-</script>
-<script>
-  (async function(){
-    var cards = document.getElementById('productCards');
-    var msg   = document.getElementById('emptyProductsMsg');
-    if(!cards || !msg) return;
-
-    try {
-      const products = [];
-      
-      for (const slug of PRODUCT_SLUGS) {
-        try {
-          const mdUrl = `/content/products/${slug}.md`;
-          const mdRes = await fetch(mdUrl);
-          const mdText = await mdRes.text();
-          
-          const frontmatterMatch = mdText.match(/^---\n([\s\S]*?)\n---/);
-          if (!frontmatterMatch) continue;
-          
-          const fm = frontmatterMatch[1];
-          const getDraft = fm.match(/^draft:\s*(.+)$/m);
-          if (getDraft && getDraft[1].trim() === 'true') continue;
-          
-          const getTitle = fm.match(/^title:\s*(.+)$/m);
-          const getCategory = fm.match(/^category:\s*(.+)$/m);
-          const getImage = fm.match(/^image:\s*(.+)$/m);
-          const getSummary = fm.match(/^summary:\s*(.+)$/m);
-          const getBuyUrl = fm.match(/^buy_url:\s*(.+)$/m);
-          const getWhy = fm.match(/^why:\s*(.+)$/m);
-          const getRating = fm.match(/^rating:\s*([\d.]+)$/m);
-          const getFeatured = fm.match(/^featured:\s*(.+)$/m);
-          
-          products.push({
-            slug,
-            title: getTitle ? getTitle[1].trim().replace(/^["']|["']$/g, '') : 'Sin título',
-            category: getCategory ? getCategory[1].trim() : '',
-            image: getImage ? getImage[1].trim() : '',
-            summary: getSummary ? getSummary[1].trim() : '',
-            buyUrl: getBuyUrl ? getBuyUrl[1].trim() : '#',
-            why: getWhy ? getWhy[1].trim() : '',
-            rating: getRating ? parseFloat(getRating[1]) : 0,
-            featured: getFeatured ? getFeatured[1].trim() === 'true' : false
-          });
-        } catch (e) {
-          console.error('Error loading product:', slug, e);
-        }
-      }
-      
-      if (products.length === 0) {
-        msg.style.display = 'block';
-        return;
-      }
-      
-      msg.style.display = 'none';
-      
-      let featuredId = null;
-      let topRatedProduct = null;
-      
-      products.forEach((p, idx) => {
-        if (p.featured && !featuredId) {
-          featuredId = 'prod-' + p.slug;
-        }
-        if (!topRatedProduct || p.rating > topRatedProduct.rating || 
-            (p.rating === topRatedProduct.rating && idx < products.indexOf(topRatedProduct))) {
-          topRatedProduct = p;
-        }
-      });
-      
-      const topRatedId = topRatedProduct ? 'prod-' + topRatedProduct.slug : null;
-      
-      cards.innerHTML = '';
-      
-      products.forEach(p => {
-        const whyId = 'why-' + p.slug;
-        const cardId = 'prod-' + p.slug;
-        
-        const article = document.createElement('article');
-        article.className = 'card';
-        article.id = cardId;
-        article.setAttribute('data-stars', p.rating);
-        
-        article.innerHTML = `
-          <img class="thumb" src="${p.image}" alt="${p.title}">
-          <div class="pad">
-            <h4>${p.title}</h4>
-            <div class="sub">${p.summary}</div>
-            <a class="buy" href="${p.buyUrl}" target="_blank" rel="nofollow noopener">Comprar en Amazon</a>
-            <a class="why" href="#${whyId}" data-open="${whyId}">Ver por qué lo recomiendo</a>
-            <div class="reason" id="${whyId}">${p.why}</div>
-          </div>
-        `;
-        
-        const fill = Math.max(0, Math.min(100, (p.rating/5)*100));
-        const stars = document.createElement('div');
-        stars.className = 'stars';
-        stars.style.setProperty('--fill', fill + '%');
-        const label = document.createElement('small');
-        label.textContent = p.rating.toFixed(1);
-        stars.appendChild(label);
-        
-        const pad = article.querySelector('.pad');
-        const sub = article.querySelector('.sub');
-        if (pad && sub) {
-          pad.insertBefore(stars, sub);
-        }
-        
-        cards.appendChild(article);
-      });
-      
-      const targetId = featuredId || topRatedId;
-      const allBtns = Array.from(document.querySelectorAll('a.btn-primary'));
-      const btn = allBtns.find(b => b.textContent.trim() === 'Ver producto destacado');
-      if (btn && targetId) {
-        btn.onclick = function(e) {
-          e.preventDefault();
-          const target = document.getElementById(targetId);
-          if (target) {
-            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        };
-      }
-      
-    } catch (e) {
-      console.error('Error loading products:', e);
-      msg.style.display = 'block';
+(async function(){
+  const grid = document.querySelector('.cards');
+  const emptyNote = document.querySelector('[data-products-empty]');
+  try {
+    const res = await fetch('/assets/products.json', { cache: 'no-store' });
+    const items = res.ok ? await res.json() : [];
+    if (!items.length) {
+      if (emptyNote) emptyNote.style.display = 'block';
+      return;
     }
-  })();
+    if (emptyNote) emptyNote.style.display = 'none';
+
+    items.forEach(p => {
+      const art = document.createElement('article');
+      art.className = 'card';
+      art.id = `prod-${p.slug}`;
+      art.innerHTML = `
+        <img class="thumb" src="${p.image || ''}" alt="${p.title || ''}">
+        <div class="pad">
+          <h4>${p.title || ''}</h4>
+          <div class="sub">${p.summary || ''}</div>
+          <a class="buy" href="${p.buy_url || '#'}" target="_blank" rel="nofollow noopener">Comprar en Amazon</a>
+          <a class="why" data-open="why-${p.slug}" href="#why-${p.slug}">Ver por qué lo recomiendo</a>
+          <div class="reason" id="why-${p.slug}">${p.why || ''}</div>
+        </div>
+      `;
+      grid && grid.appendChild(art);
+      const link = art.querySelector('.why');
+      const panel = art.querySelector('.reason');
+      if (link && panel) {
+        panel.style.display = p.why ? 'none' : 'none';
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        });
+      }
+    });
+
+    const featured = items.find(p => p.featured);
+    let target = featured || items.slice().sort((a,b) => {
+      if (b.rating !== a.rating) return b.rating - a.rating;
+      return (b.date || '').localeCompare(a.date || '');
+    })[0];
+
+    const btn = Array.from(document.querySelectorAll('a,button'))
+      .find(el => el.textContent && el.textContent.trim() === 'Ver producto destacado');
+    if (btn && target) {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const node = document.getElementById(`prod-${target.slug}`);
+        if (node) node.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    }
+  } catch (e) {
+    console.error('Error cargando productos:', e);
+    if (emptyNote) emptyNote.style.display = 'block';
+  }
+})();
 </script>
 <script>
   (function(){
