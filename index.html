@@ -206,6 +206,45 @@
 #destacado .trust > div:nth-of-type(2){
   margin-top: 22px;
 }
+/* Barra sticky bajo el título de productos */
+.products-toolbar{
+  position: sticky;
+  top: 82px;              /* debajo del header fijo actual */
+  z-index: 15;
+  background: var(--bg);
+  border-bottom: 1px solid var(--ring);
+  margin: 8px 0 18px;
+  padding: 10px 0;
+}
+.products-toolbar .search-wrap{ max-width: 460px; }
+#productSearch{
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--ring);
+  border-radius: 8px;
+  font: inherit;
+}
+.suggestions{
+  display: none;
+  position: absolute;
+  margin-top: 6px;
+  max-width: 460px;
+  background:#fff;
+  border:1px solid var(--ring);
+  border-radius:8px;
+  box-shadow:0 4px 18px rgba(0,0,0,.08);
+  list-style:none;
+  padding:6px 0;
+}
+.suggestions li{
+  padding:10px 12px;
+  cursor:pointer;
+  display:flex; gap:8px; align-items:center;
+}
+.suggestions li:hover{ background:#f9fafb; }
+.suggestions .title{ font-weight:600; }
+.suggestions .sub{ color:var(--muted); font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:320px; }
+.is-hidden{ display:none !important; } /* para ocultar tarjetas sin romper layout */
 </style>
 
 <!-- Contact section style patch (scoped) -->
@@ -337,6 +376,12 @@
   <section id="productos" class="section">
     <div class="kicker">RECOMENDACIONES DE CALIDAD</div>
     <h3>Descubre productos que valen la pena</h3>
+    <div class="products-toolbar" aria-label="Barra de búsqueda">
+      <div class="search-wrap">
+        <input id="productSearch" type="search" placeholder="Buscar productos (mín. 3 letras)…" autocomplete="off" aria-label="Buscar productos" />
+        <ul id="searchSuggestions" class="suggestions" role="listbox" aria-label="Sugerencias"></ul>
+      </div>
+    </div>
     <p id="emptyProductsMsg" style="text-align:center;color:#6b7280;margin:24px 0 8px;font-size:14px">
       Aún no hay productos. Añade el primero desde <a href="/admin" style="color:#6b7280;text-decoration:underline">/admin</a>.
     </p>
@@ -672,6 +717,81 @@ if (btnDest){
       }
     });
   })();
+</script>
+<script>
+(function(){
+  const grid = document.querySelector('.cards');
+  const input = document.getElementById('productSearch');
+  const list  = document.getElementById('searchSuggestions');
+  if(!grid || !input || !list) return;
+
+  // Indexación de tarjetas (título + resumen)
+  let index = [];
+  const buildIndex = () => {
+    index = Array.from(grid.querySelectorAll('article.card')).map(card=>{
+      const id  = card.id || '';
+      const ttl = (card.querySelector('h4')?.textContent || '').trim();
+      const sub = (card.querySelector('.sub')?.textContent || '').trim();
+      return { id, ttl, sub, card, haystack: (ttl + ' ' + sub).toLowerCase() };
+    });
+  };
+  buildIndex();
+
+  // Reindexa si el grid cambia (p.ej., tras fetch)
+  const mo = new MutationObserver(buildIndex);
+  mo.observe(grid, { childList: true });
+
+  // Utilidades
+  const showAll = () => index.forEach(x => x.card.classList.remove('is-hidden'));
+  const clearSuggestions = () => { list.innerHTML = ''; list.style.display = 'none'; };
+  const renderSuggestions = (hits) => {
+    if (!hits.length) { clearSuggestions(); return; }
+    list.innerHTML = hits.slice(0,6).map(h=>(
+      `<li role="option" data-id="${h.id}">
+         <span class="title">${h.ttl}</span>
+         <span class="sub">${h.sub}</span>
+       </li>`
+    )).join('');
+    list.style.display = 'block';
+  };
+
+  // Interacción
+  input.addEventListener('input', () => {
+    const q = input.value.trim().toLowerCase();
+    if (q.length < 3){
+      showAll();
+      clearSuggestions();
+      return;
+    }
+    const hits = index.filter(x => x.haystack.includes(q));
+    // Filtra tarjetas
+    index.forEach(x => x.card.classList.toggle('is-hidden', !hits.includes(x)));
+    renderSuggestions(hits);
+  });
+
+  input.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape'){
+      input.value = '';
+      showAll();
+      clearSuggestions();
+    }
+  });
+
+  // Click en sugerencias -> scroll a tarjeta y mantén visibles solo coincidencias
+  list.addEventListener('click', (e)=>{
+    const li = e.target.closest('li[data-id]');
+    if(!li) return;
+    const id = li.getAttribute('data-id');
+    const target = document.getElementById(id);
+    if(target){
+      target.scrollIntoView({ behavior:'smooth', block:'start' });
+      clearSuggestions();
+    }
+  });
+
+  // Ocultar sugerencias al perder foco (ligero retardo por clicks)
+  input.addEventListener('blur', ()=> setTimeout(clearSuggestions, 150));
+})();
 </script>
 </body>
 </html>
