@@ -1,7 +1,7 @@
 ---
 title: "WORX Taladro "
 category: Herramientas
-image: /images/uploads/diseño-sin-título-2-.png
+image: /images/uploads/captura-de-pantalla-2025-10-20-a-las-5.32.14.png
 summary: Taladro percutor
 buy_url: https://amzn.to/47ySS6A
 why: He probado este producto durante varios meses en condiciones reales de
