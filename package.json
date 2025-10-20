@@ -1,0 +1,9 @@
+{
+  "name": "recomendacionesgo2-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate:products": "node scripts/build-products-manifest.mjs",
+    "build": "npm run generate:products"
+  }
+}
