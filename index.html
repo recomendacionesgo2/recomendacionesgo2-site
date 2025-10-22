@@ -964,46 +964,69 @@ if (btnDest){
 (function(){
   const modal = document.getElementById('why-modal');
   if(!modal) return;
+
   const box = document.getElementById('wm-content');
+  const BACKDROP_SELECTOR = '[data-wm-close]';
 
   function openModal(html){
-    box.innerHTML = html || '<p>(Sin texto todavía)</p>';
+    box.innerHTML = html && String(html).trim() ? html : '<p>(Sin texto todavía)</p>';
     modal.setAttribute('aria-hidden','false');
+    // Bloquea scroll SOLO si el modal está realmente visible
     document.body.style.overflow = 'hidden';
   }
   function closeModal(){
     modal.setAttribute('aria-hidden','true');
+    // Restablece siempre el scroll al cerrar
     document.body.style.overflow = '';
+    // Limpia el contenido para evitar fugas
     box.innerHTML = '';
   }
 
+  // Cerrar con clic en backdrop o botón ✕
   modal.addEventListener('click', e => {
-    if (e.target && e.target.hasAttribute('data-wm-close')) closeModal();
+    if (e.target && e.target.matches(BACKDROP_SELECTOR + ', .wm-close')) closeModal();
   });
+  // Cerrar con ESC
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-  // Delegación global: vale para tarjetas presentes y futuras
+  // Delegación en toda la página para capturar los clicks en "Ver por qué lo recomiendo"
   document.addEventListener('click', function(e){
     const btn = e.target.closest('.card a.why');
     if(!btn) return;
 
-    // Evita que otros manejadores antiguos toquen el DOM
-    e.preventDefault();
-    e.stopImmediatePropagation();
-
-    // 1) Intenta por data-open / href="#id"
+    // 1) Intenta localizar el target por data-open o href="#id"
     const ref = (btn.getAttribute('data-open') || btn.getAttribute('href') || '').replace(/^#/, '');
     let src = ref ? document.getElementById(ref) : null;
 
-    // 2) Si no hay id, toma la .reason dentro de su .card
+    // 2) Si no hay id, busca la .reason dentro de su .card
     if(!src){
       const card = btn.closest('.card');
       src = card ? card.querySelector('.reason') : null;
     }
 
-    const html = src ? String(src.innerHTML || '').trim() : '';
-    openModal(html);
+    // Si NO hay contenido válido, NO prevenir el comportamiento previo y NO tocar el scroll.
+    if(!src || !String(src.innerHTML || '').trim()){
+      return;
+    }
+
+    // Hay contenido -> Prevenir que el script anterior despliegue el texto embebido
+    e.preventDefault();
+    e.stopImmediatePropagation();
+
+    // Abre modal con TODO el contenido
+    openModal(src.innerHTML);
   }, true);
+
+  // Salvaguarda: si por cualquier razón el modal está oculto, asegúrate de que el scroll esté libre
+  const mo = new MutationObserver(() => {
+    if (modal.getAttribute('aria-hidden') !== 'false') {
+      document.body.style.overflow = '';
+    }
+  });
+  mo.observe(modal, { attributes: true, attributeFilter: ['aria-hidden'] });
+
+  // Al abandonar la página, asegúrate de devolver el scroll
+  window.addEventListener('beforeunload', () => { document.body.style.overflow = ''; });
 })();
 </script>
 <!-- ==== /WHY-MODAL ==== -->
