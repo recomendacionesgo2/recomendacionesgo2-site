@@ -870,5 +870,66 @@ if (btnDest){
     <div class="wm-content" id="wm-content"></div>
   </div>
 </div>
+<script>
+(function () {
+  // Requiere la lista generada (ya la tenemos)
+  if (!Array.isArray(window.__products)) return;
+
+  // Reutiliza el modal que ya exista (no crear otro)
+  var modal = document.getElementById('why-modal') || document.getElementById('product-modal');
+  if (!modal) return;
+
+  // Zona donde pintar el contenido (según tu modal actual)
+  var content =
+    document.getElementById('wm-content') ||    // modal ligero
+    document.getElementById('pm-why') ||        // modal anterior
+    modal.querySelector('.wm-content') || modal.querySelector('#pm-why');
+
+  function openWhy(html) {
+    if (!content || !html) return;
+    content.innerHTML = html;                // <<< usa TODO el HTML del CMS
+    modal.style.display = 'block';
+    modal.setAttribute('aria-hidden','false');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeWhy() {
+    modal.setAttribute('aria-hidden','true');
+    modal.style.display = 'none';
+    document.body.style.overflow = '';
+    if (content) content.innerHTML = '';
+  }
+
+  // Cierre por X, fondo o ESC (compatibles con ambos modales)
+  modal.addEventListener('click', function (e) {
+    if (e.target.matches('[data-wm-close],[data-pm-close]')) closeWhy();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeWhy();
+  });
+
+  // Oculta el panel pequeño de tarjeta (para que no "corte" el texto)
+  document.querySelectorAll('.card .reason').forEach(function (r) {
+    r.style.display = 'none';
+  });
+
+  // Intercepta el botón "Ver por qué lo recomiendo" y abre SIEMPRE el pop-up
+  document.querySelectorAll('.card .why').forEach(function (btn) {
+    btn.addEventListener('click', function (ev) {
+      ev.preventDefault();
+      ev.stopPropagation();
+
+      var card = btn.closest('.card');
+      var slug = (card && card.id || '').replace(/^prod-/, '');
+      var p = window.__products.find(function (x) { return x.slug === slug; });
+
+      var html = (p && p.why && String(p.why).trim())
+        ? p.why
+        : (p && p.summary ? ('<p>' + p.summary + '</p>') : '');
+
+      openWhy(html);
+    }, { capture: true }); // nos adelantamos a manejadores antiguos
+  });
+})();
+</script>
 </body>
 </html>
