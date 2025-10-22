@@ -793,5 +793,35 @@ if (btnDest){
   input.addEventListener('blur', ()=> setTimeout(clearSuggestions, 150));
 })();
 </script>
+<style id="why-toggle-style">
+  .reason{ display:none; }
+</style>
+<script id="why-toggle-script">
+(function(){
+  document.addEventListener('click', function(e){
+    var a = e.target.closest('.why');
+    if(!a) return;
+    e.preventDefault();
+
+    // 1) Si el enlace tiene #id (href o data-open), úsalo
+    var sel = a.getAttribute('href') || a.getAttribute('data-open') || '';
+    var panel = null;
+    if(sel && sel.charAt(0)==='#'){
+      panel = document.querySelector(sel);
+    }
+
+    // 2) Fallback: buscar el .reason dentro de la misma tarjeta
+    if(!panel){
+      var card = a.closest('.card');
+      if(card) panel = card.querySelector('.reason');
+    }
+
+    if(panel){
+      var isHidden = getComputedStyle(panel).display === 'none';
+      panel.style.display = isHidden ? 'block' : 'none';
+    }
+  }, false);
+})();
+</script>
 </body>
 </html>
