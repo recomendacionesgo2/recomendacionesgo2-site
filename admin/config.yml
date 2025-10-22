@@ -24,7 +24,8 @@ collections:
       - label: "Puntuación"
         name: "rating"
         widget: "number"
-        value_type: "float"
+        valueType: "float"     # usa camelCase
+        precision: 1           # 1 decimal
         min: 4
         max: 5
         step: 0.1
