@@ -324,6 +324,26 @@
 .card .reason.is-open{ display:block !important; }
 </style>
 
+<style>
+/* Oculta el texto embebido de la tarjeta para que no se expanda */
+.card .reason{ display:none !important; }
+
+/* Modal base */
+#why-modal{ position:fixed; inset:0; display:none; z-index:9999; }
+#why-modal[aria-hidden="false"]{ display:block; }
+.wm-backdrop{ position:absolute; inset:0; background:rgba(0,0,0,.5); }
+.wm-dialog{
+  position:relative; margin:6vh auto; max-width:800px;
+  background:#fff; border:1px solid var(--ring); border-radius:12px;
+  padding:20px; box-shadow:0 10px 30px rgba(0,0,0,.2);
+}
+.wm-close{
+  position:absolute; top:10px; right:10px; border:1px solid var(--ring);
+  background:#fff; border-radius:8px; padding:6px 10px; cursor:pointer;
+}
+.wm-content{ max-height:70vh; overflow:auto; line-height:1.6; }
+@media (max-width:860px){ .wm-dialog{ margin:4vh 12px; } }
+</style>
 </head>
 <body>
 <header>
@@ -874,5 +894,59 @@ if (btnDest){
   }, {passive:false});
 })();
 </script>
+<script>
+(function(){
+  const modal   = document.getElementById('why-modal');
+  const content = document.getElementById('wm-content');
+
+  function open(html){
+    content.innerHTML = html || '';
+    modal.setAttribute('aria-hidden','false');
+    document.body.style.overflow = 'hidden';
+  }
+  function close(){
+    modal.setAttribute('aria-hidden','true');
+    content.innerHTML = '';
+    document.body.style.overflow = '';
+  }
+
+  modal.addEventListener('click', e => {
+    if (e.target && e.target.hasAttribute('data-close')) close();
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+
+  // Delegación: cualquier click en ".card .why" abre el modal con el texto completo
+  document.addEventListener('click', function(e){
+    const link = e.target.closest('.card .why');
+    if (!link) return;
+    e.preventDefault();
+
+    const card = link.closest('.card');
+    if (!card) return;
+
+    let html = '';
+    const href = link.getAttribute('href') || '';
+    // 1) Si el href es "#id" y existe ese panel dentro de la MISMA tarjeta, úsalo
+    if (href.startsWith('#')) {
+      const panel = card.querySelector(href);
+      if (panel) html = panel.innerHTML;
+    }
+    // 2) Fallback: primer .reason de la tarjeta
+    if (!html) {
+      const panel = card.querySelector('.reason');
+      if (panel) html = panel.innerHTML;
+    }
+    open(html);
+  }, { passive:false });
+})();
+</script>
+<!-- Modal "Por qué lo recomiendo" -->
+<div id="why-modal" aria-hidden="true">
+  <div class="wm-backdrop" data-close></div>
+  <div class="wm-dialog" role="dialog" aria-modal="true" aria-labelledby="wm-title">
+    <button class="wm-close" aria-label="Cerrar" data-close>✕</button>
+    <div class="wm-content" id="wm-content"></div>
+  </div>
+</div>
 </body>
 </html>
