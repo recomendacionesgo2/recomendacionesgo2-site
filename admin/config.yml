@@ -21,6 +21,14 @@ collections:
       - { label: "Resumen (máx 250 caracteres)", name: "summary", widget: "text", max_length: 250 }
       - { label: "Enlace de compra (Amazon)", name: "buy_url", widget: "string" }
       - { label: "Por qué lo recomiendo (ampliado)", name: "why", widget: "markdown", required: false }
-      - { label: "Puntuación", name: "rating", widget: "number", min: 4.0, max: 5.0, step: 0.1, default: 4.5 }
+      - label: "Puntuación"
+        name: "rating"
+        widget: "number"
+        value_type: "float"
+        min: 4
+        max: 5
+        step: 0.1
+        default: 4.5
+        required: true
       - { label: "Destacado", name: "featured", widget: "boolean", default: false }
       - { label: "Borrador (ocultar del listado)", name: "draft", widget: "boolean", default: false }
