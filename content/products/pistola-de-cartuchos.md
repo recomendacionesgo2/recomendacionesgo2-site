@@ -10,5 +10,5 @@ why: Lo que más me gusta es lo poco que hay que presionar para que salga el
   primer uso. Muy recomendable para siliconas, adhesivos y selladores densos.
 rating: 4
 featured: false
-draft: true
+draft: false
 ---
