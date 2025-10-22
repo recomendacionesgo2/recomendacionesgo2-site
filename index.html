@@ -344,6 +344,22 @@
 .wm-content{ max-height:70vh; overflow:auto; line-height:1.6; }
 @media (max-width:860px){ .wm-dialog{ margin:4vh 12px; } }
 </style>
+<style>
+#why-modal{position:fixed; inset:0; z-index:9999;}
+#why-modal[aria-hidden="true"]{display:none;}
+.wm-backdrop{position:absolute; inset:0; background:rgba(0,0,0,.45);}
+.wm-dialog{
+  position:relative; margin:8vh auto; max-width:720px; background:#fff;
+  border:1px solid var(--ring); border-radius:10px; overflow:hidden;
+  box-shadow:0 10px 30px rgba(0,0,0,.25); padding:18px;
+}
+.wm-close{position:absolute; top:8px; right:8px; border:1px solid var(--ring);
+  background:#fff; border-radius:6px; padding:6px 10px; cursor:pointer;}
+.wm-content{
+  max-height:60vh; overflow:auto; white-space:pre-wrap;
+}
+@media(max-width:860px){ .wm-dialog{margin:6vh 12px;} }
+</style>
 </head>
 <body>
 <header>
@@ -805,63 +821,52 @@ if (btnDest){
 </script>
 <script>
 (function(){
-  // Elimina posibles listeners antiguos
-  document.querySelectorAll('.card .why').forEach(el=>{
-    const clone = el.cloneNode(true);
-    el.replaceWith(clone);
-  });
+  if(!Array.isArray(window.__products)) return;
 
-  // Modal base
-  let modal = document.getElementById('why-modal');
-  if (!modal){
-    modal = document.createElement('div');
-    modal.id = 'why-modal';
-    modal.setAttribute('aria-hidden','true');
-    modal.innerHTML = `
-      <div class="wm-backdrop" data-close></div>
-      <div class="wm-dialog" role="dialog" aria-modal="true">
-        <button class="wm-close" aria-label="Cerrar" data-close>✕</button>
-        <div class="wm-content" id="wm-content"></div>
-      </div>`;
-    document.body.appendChild(modal);
-  }
-
-  const content = modal.querySelector('#wm-content');
-  function open(html){
-    content.innerHTML = html || '';
+  var modal = document.getElementById('why-modal');
+  var content = document.getElementById('wm-content');
+  function openWhy(html){
+    if(!html) return;
+    content.innerHTML = html;
     modal.setAttribute('aria-hidden','false');
     document.body.style.overflow = 'hidden';
   }
-  function close(){
+  function closeWhy(){
     modal.setAttribute('aria-hidden','true');
-    content.innerHTML = '';
     document.body.style.overflow = '';
+    content.innerHTML = '';
   }
-  modal.addEventListener('click', e=>{
-    if (e.target.hasAttribute('data-close')) close();
+  modal.addEventListener('click', function(e){
+    if(e.target.hasAttribute('data-wm-close')) closeWhy();
   });
-  document.addEventListener('keydown', e=>{
-    if (e.key==='Escape') close();
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') closeWhy();
   });
 
-  // Delegación única — abre el texto en el modal
-  document.addEventListener('click', e=>{
-    const link = e.target.closest('.card .why');
-    if (!link) return;
-    e.preventDefault();
-    const card = link.closest('.card');
-    if (!card) return;
-    const reason = card.querySelector('.reason');
-    if (!reason) return;
-    open(reason.innerHTML);
-  }, {passive:false});
+  document.querySelectorAll('.card').forEach(function(card){
+    var id = card.id || '';
+    var slug = id.replace(/^prod-/, '');
+    var p = window.__products.find(function(x){ return x.slug === slug; }) || null;
+
+    var btn = card.querySelector('a.why, button.why');
+    var inlinePanel = card.querySelector('.reason');
+    if(inlinePanel){ inlinePanel.style.display = 'none'; }
+
+    if(btn){
+      btn.addEventListener('click', function(ev){
+        ev.preventDefault();
+        ev.stopPropagation();
+        var html = (p && p.why && String(p.why).trim()) ? p.why : ('<p>'+ (p && p.summary ? p.summary : '') +'</p>');
+        openWhy(html);
+      }, { capture:true });
+    }
+  });
 })();
 </script>
-<!-- Modal "Por qué lo recomiendo" -->
-<div id="why-modal" aria-hidden="true">
-  <div class="wm-backdrop" data-close></div>
+<div id="why-modal" aria-hidden="true" style="display:none">
+  <div class="wm-backdrop" data-wm-close></div>
   <div class="wm-dialog" role="dialog" aria-modal="true" aria-labelledby="wm-title">
-    <button class="wm-close" aria-label="Cerrar" data-close>✕</button>
+    <button class="wm-close" aria-label="Cerrar" data-wm-close>✕</button>
     <div class="wm-content" id="wm-content"></div>
   </div>
 </div>
