@@ -703,22 +703,6 @@ if (btnDest){
 })();
 </script>
 <script>
-  (function(){
-    document.addEventListener('click', function(e){
-      var target = e.target;
-      if (target.classList.contains('why')) {
-        e.preventDefault();
-        var whyId = target.getAttribute('data-open');
-        if (!whyId) return;
-        var reason = document.getElementById(whyId);
-        if (reason) {
-          reason.style.display = reason.style.display === 'block' ? 'none' : 'block';
-        }
-      }
-    });
-  })();
-</script>
-<script>
 (function(){
   const grid = document.querySelector('.cards');
   const input = document.getElementById('productSearch');
@@ -793,34 +777,51 @@ if (btnDest){
   input.addEventListener('blur', ()=> setTimeout(clearSuggestions, 150));
 })();
 </script>
-<style id="why-toggle-style">
-  .reason{ display:none; }
-</style>
-<script id="why-toggle-script">
+<script>
 (function(){
-  document.addEventListener('click', function(e){
-    var a = e.target.closest('.why');
-    if(!a) return;
-    e.preventDefault();
+  // 1) Delegación de clicks para .why
+  document.addEventListener('click', function(ev){
+    const btn = ev.target.closest('.why');
+    if (!btn) return;
+    ev.preventDefault();
 
-    // 1) Si el enlace tiene #id (href o data-open), úsalo
-    var sel = a.getAttribute('href') || a.getAttribute('data-open') || '';
-    var panel = null;
-    if(sel && sel.charAt(0)==='#'){
-      panel = document.querySelector(sel);
+    // Prioridad: id del href (#why-slug) si existe y está dentro de la misma tarjeta
+   const href = btn.getAttribute('href') || '';
+    let panel = null;
+    if (href.startsWith('#')) {
+      const byId = document.querySelector(href);
+      if (byId && btn.closest('.card')?.contains(byId)) panel = byId;
     }
+    // Si no hay id o no está en la tarjeta, usa el .reason más cercano en la tarjeta
+    if (!panel) {
+      const card = btn.closest('.card');
+      panel = card?.querySelector('.reason');
+    }
+    if (!panel) return;
 
-    // 2) Fallback: buscar el .reason dentro de la misma tarjeta
-    if(!panel){
-      var card = a.closest('.card');
-      if(card) panel = card.querySelector('.reason');
-    }
+    // Toggle visible/oculto
+    const isHidden = getComputedStyle(panel).display === 'none';
+    panel.style.display = isHidden ? 'block' : 'none';
+  }, { passive:false });
 
-    if(panel){
-      var isHidden = getComputedStyle(panel).display === 'none';
-      panel.style.display = isHidden ? 'block' : 'none';
-    }
-  }, false);
+  // 2) Asegura que los .reason empiecen ocultos si tienen contenido
+  function initReasons(root=document){
+    root.querySelectorAll('.card .reason').forEach(el=>{
+      if (el.dataset._init) return;
+      // Si tiene texto/HTML, arranca oculto
+      const hasContent = (el.textContent || el.innerHTML || '').trim().length > 0;
+      if (hasContent) el.style.display = 'none';
+      el.dataset._init = '1';
+    });
+  }
+  initReasons();
+
+  // 3) Si las tarjetas se añaden después, vuelve a inicializar
+  const grid = document.querySelector('.cards');
+  if (grid) {
+    new MutationObserver(()=>initReasons(grid))
+      .observe(grid, { childList:true, subtree:true });
+  }
 })();
 </script>
 </body>
