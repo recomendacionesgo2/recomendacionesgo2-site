@@ -318,47 +318,20 @@
 .stars small{ margin-left:8px; color:#6b7280; font-size:12px; vertical-align:2px; }
 </style>
 
-<style>
-/* Visibilidad robusta del texto "por qué lo recomiendo" */
-.card .reason{ display:none; }
-.card .reason.is-open{ display:block !important; }
-</style>
-
-<style>
-/* Oculta el texto embebido de la tarjeta para que no se expanda */
-.card .reason{ display:none !important; }
-
-/* Modal base */
-#why-modal{ position:fixed; inset:0; display:none; z-index:9999; }
-#why-modal[aria-hidden="false"]{ display:block; }
-.wm-backdrop{ position:absolute; inset:0; background:rgba(0,0,0,.5); }
-.wm-dialog{
-  position:relative; margin:6vh auto; max-width:800px;
-  background:#fff; border:1px solid var(--ring); border-radius:12px;
-  padding:20px; box-shadow:0 10px 30px rgba(0,0,0,.2);
-}
-.wm-close{
-  position:absolute; top:10px; right:10px; border:1px solid var(--ring);
-  background:#fff; border-radius:8px; padding:6px 10px; cursor:pointer;
-}
-.wm-content{ max-height:70vh; overflow:auto; line-height:1.6; }
-@media (max-width:860px){ .wm-dialog{ margin:4vh 12px; } }
-</style>
-<style>
-#why-modal{position:fixed; inset:0; z-index:9999;}
-#why-modal[aria-hidden="true"]{display:none;}
-.wm-backdrop{position:absolute; inset:0; background:rgba(0,0,0,.45);}
-.wm-dialog{
-  position:relative; margin:8vh auto; max-width:720px; background:#fff;
-  border:1px solid var(--ring); border-radius:10px; overflow:hidden;
-  box-shadow:0 10px 30px rgba(0,0,0,.25); padding:18px;
-}
-.wm-close{position:absolute; top:8px; right:8px; border:1px solid var(--ring);
-  background:#fff; border-radius:6px; padding:6px 10px; cursor:pointer;}
-.wm-content{
-  max-height:60vh; overflow:auto; white-space:pre-wrap;
-}
-@media(max-width:860px){ .wm-dialog{margin:6vh 12px;} }
+<style id="why-modal-styles">
+  .card .reason{display:none!important;}          /* impedir expansión en línea */
+  #why-modal[aria-hidden="true"]{display:none}
+  #why-modal{position:fixed;inset:0;z-index:9999}
+  #why-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.45)}
+  #why-dialog{
+    position:relative;margin:6vh auto;max-width:900px;background:#fff;
+    border:1px solid var(--ring);border-radius:10px;padding:18px
+  }
+  #why-close{
+    position:absolute;top:8px;right:8px;border:1px solid var(--ring);
+    background:#fff;border-radius:6px;padding:6px 10px;cursor:pointer
+  }
+  @media(max-width:860px){#why-dialog{margin:4vh 12px}}
 </style>
 </head>
 <body>
@@ -467,6 +440,14 @@
 
   <footer><div class="foot"><p>© <span id="year"></span> Recomendaciones Go2 — por Sebastián Ferragut</p></div></footer>
 </main>
+
+<div id="why-modal" aria-hidden="true">
+  <div id="why-backdrop" data-why-close></div>
+  <div id="why-dialog" role="dialog" aria-modal="true">
+    <button id="why-close" data-why-close aria-label="Cerrar">✕</button>
+    <div id="why-content"></div>
+  </div>
+</div>
 
 <script>
 if (new URLSearchParams(location.search).get('success') === '1'){
@@ -821,214 +802,47 @@ if (btnDest){
 </script>
 <script>
 (function(){
-  if(!Array.isArray(window.__products)) return;
-
   var modal = document.getElementById('why-modal');
-  var content = document.getElementById('wm-content');
+  var content = document.getElementById('why-content');
+  if(!modal || !content) return;
+
+  function lockScroll(){ document.body.style.overflow='hidden'; }
+  function unlockScroll(){ document.body.style.overflow=''; }
+
   function openWhy(html){
-    if(!html) return;
-    content.innerHTML = html;
-    modal.setAttribute('aria-hidden','false');
-    document.body.style.overflow = 'hidden';
+    content.innerHTML = (html && String(html).trim()) ? html : '<p>(Sin texto todavía)</p>';
+    modal.setAttribute('aria-hidden','false'); lockScroll();
   }
   function closeWhy(){
-    modal.setAttribute('aria-hidden','true');
-    document.body.style.overflow = '';
-    content.innerHTML = '';
+    modal.setAttribute('aria-hidden','true'); unlockScroll(); content.innerHTML='';
   }
+
   modal.addEventListener('click', function(e){
-    if(e.target.hasAttribute('data-wm-close')) closeWhy();
+    if(e.target && (e.target.hasAttribute('data-why-close') || e.target.id==='why-backdrop')) closeWhy();
   });
-  document.addEventListener('keydown', function(e){
-    if(e.key === 'Escape') closeWhy();
-  });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeWhy(); });
 
-  document.querySelectorAll('.card').forEach(function(card){
-    var id = card.id || '';
-    var slug = id.replace(/^prod-/, '');
-    var p = window.__products.find(function(x){ return x.slug === slug; }) || null;
-
-    var btn = card.querySelector('a.why, button.why');
-    var inlinePanel = card.querySelector('.reason');
-    if(inlinePanel){ inlinePanel.style.display = 'none'; }
-
-    if(btn){
-      btn.addEventListener('click', function(ev){
-        ev.preventDefault();
-        ev.stopPropagation();
-        var html = (p && p.why && String(p.why).trim()) ? p.why : ('<p>'+ (p && p.summary ? p.summary : '') +'</p>');
-        openWhy(html);
-      }, { capture:true });
-    }
-  });
-})();
-</script>
-<div id="why-modal" aria-hidden="true" style="display:none">
-  <div class="wm-backdrop" data-wm-close></div>
-  <div class="wm-dialog" role="dialog" aria-modal="true" aria-labelledby="wm-title">
-    <button class="wm-close" aria-label="Cerrar" data-wm-close>✕</button>
-    <div class="wm-content" id="wm-content"></div>
-  </div>
-</div>
-<script>
-(function () {
-  // Requiere la lista generada (ya la tenemos)
-  if (!Array.isArray(window.__products)) return;
-
-  // Reutiliza el modal que ya exista (no crear otro)
-  var modal = document.getElementById('why-modal') || document.getElementById('product-modal');
-  if (!modal) return;
-
-  // Zona donde pintar el contenido (según tu modal actual)
-  var content =
-    document.getElementById('wm-content') ||    // modal ligero
-    document.getElementById('pm-why') ||        // modal anterior
-    modal.querySelector('.wm-content') || modal.querySelector('#pm-why');
-
-  function openWhy(html) {
-    if (!content || !html) return;
-    content.innerHTML = html;                // <<< usa TODO el HTML del CMS
-    modal.style.display = 'block';
-    modal.setAttribute('aria-hidden','false');
-    document.body.style.overflow = 'hidden';
-  }
-  function closeWhy() {
-    modal.setAttribute('aria-hidden','true');
-    modal.style.display = 'none';
-    document.body.style.overflow = '';
-    if (content) content.innerHTML = '';
-  }
-
-  // Cierre por X, fondo o ESC (compatibles con ambos modales)
-  modal.addEventListener('click', function (e) {
-    if (e.target.matches('[data-wm-close],[data-pm-close]')) closeWhy();
-  });
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') closeWhy();
-  });
-
-  // Oculta el panel pequeño de tarjeta (para que no "corte" el texto)
-  document.querySelectorAll('.card .reason').forEach(function (r) {
-    r.style.display = 'none';
-  });
-
-  // Intercepta el botón "Ver por qué lo recomiendo" y abre SIEMPRE el pop-up
-  document.querySelectorAll('.card .why').forEach(function (btn) {
-    btn.addEventListener('click', function (ev) {
-      ev.preventDefault();
-      ev.stopPropagation();
-
-      var card = btn.closest('.card');
-      var slug = (card && card.id || '').replace(/^prod-/, '');
-      var p = window.__products.find(function (x) { return x.slug === slug; });
-
-      var html = (p && p.why && String(p.why).trim())
-        ? p.why
-        : (p && p.summary ? ('<p>' + p.summary + '</p>') : '');
-
-      openWhy(html);
-    }, { capture: true }); // nos adelantamos a manejadores antiguos
-  });
-})();
-</script>
-<!-- ==== WHY-MODAL: pop-up de "Por qué lo recomiendo" (aislado) ==== -->
-<!-- HTML -->
-<div id="why-modal" aria-hidden="true">
-  <div class="wm-backdrop" data-wm-close></div>
-  <div class="wm-dialog" role="dialog" aria-modal="true" aria-labelledby="wm-title">
-    <button class="wm-close" aria-label="Cerrar" data-wm-close>✕</button>
-    <div class="wm-content" id="wm-content"></div>
-  </div>
-</div>
-
-<!-- CSS (namespaced; no pisa estilos globales) -->
-<style>
-  #why-modal{position:fixed; inset:0; display:none; z-index:9999;}
-  #why-modal[aria-hidden="false"]{display:block;}
-  #why-modal .wm-backdrop{position:absolute; inset:0; background:rgba(0,0,0,.45);}
-  #why-modal .wm-dialog{
-    position:relative; margin:6vh auto; max-width:820px; background:#fff;
-    border:1px solid var(--ring); border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,.20);
-    padding:22px;
-  }
-  #why-modal .wm-close{
-    position:absolute; top:10px; right:10px; border:1px solid var(--ring);
-    background:#fff; border-radius:8px; padding:6px 10px; cursor:pointer;
-  }
-  #why-modal .wm-content p{margin:0 0 10px;}
-  @media (max-width:860px){ #why-modal .wm-dialog{ margin:4vh 12px; } }
-</style>
-
-<!-- JS (abre con click en .card a.why; cierra con ✕, fondo o ESC) -->
-<script>
-(function(){
-  const modal = document.getElementById('why-modal');
-  if(!modal) return;
-
-  const box = document.getElementById('wm-content');
-  const BACKDROP_SELECTOR = '[data-wm-close]';
-
-  function openModal(html){
-    box.innerHTML = html && String(html).trim() ? html : '<p>(Sin texto todavía)</p>';
-    modal.setAttribute('aria-hidden','false');
-    // Bloquea scroll SOLO si el modal está realmente visible
-    document.body.style.overflow = 'hidden';
-  }
-  function closeModal(){
-    modal.setAttribute('aria-hidden','true');
-    // Restablece siempre el scroll al cerrar
-    document.body.style.overflow = '';
-    // Limpia el contenido para evitar fugas
-    box.innerHTML = '';
-  }
-
-  // Cerrar con clic en backdrop o botón ✕
-  modal.addEventListener('click', e => {
-    if (e.target && e.target.matches(BACKDROP_SELECTOR + ', .wm-close')) closeModal();
-  });
-  // Cerrar con ESC
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-
-  // Delegación en toda la página para capturar los clicks en "Ver por qué lo recomiendo"
   document.addEventListener('click', function(e){
-    const btn = e.target.closest('.card a.why');
-    if(!btn) return;
-
-    // 1) Intenta localizar el target por data-open o href="#id"
-    const ref = (btn.getAttribute('data-open') || btn.getAttribute('href') || '').replace(/^#/, '');
-    let src = ref ? document.getElementById(ref) : null;
-
-    // 2) Si no hay id, busca la .reason dentro de su .card
+    var a = e.target.closest('.card a.why');
+    if(!a) return;
+    var ref = (a.getAttribute('data-open') || a.getAttribute('href') || '').replace(/^#/,'');
+    var src = ref ? document.getElementById(ref) : null;
     if(!src){
-      const card = btn.closest('.card');
+      var card = a.closest('.card');
       src = card ? card.querySelector('.reason') : null;
     }
-
-    // Si NO hay contenido válido, NO prevenir el comportamiento previo y NO tocar el scroll.
-    if(!src || !String(src.innerHTML || '').trim()){
-      return;
-    }
-
-    // Hay contenido -> Prevenir que el script anterior despliegue el texto embebido
-    e.preventDefault();
-    e.stopImmediatePropagation();
-
-    // Abre modal con TODO el contenido
-    openModal(src.innerHTML);
+    var html = src ? src.innerHTML : '';
+    if(!html || !String(html).trim()){ return; }
+    e.preventDefault(); e.stopImmediatePropagation();
+    openWhy(html);
   }, true);
 
-  // Salvaguarda: si por cualquier razón el modal está oculto, asegúrate de que el scroll esté libre
-  const mo = new MutationObserver(() => {
-    if (modal.getAttribute('aria-hidden') !== 'false') {
-      document.body.style.overflow = '';
-    }
-  });
-  mo.observe(modal, { attributes: true, attributeFilter: ['aria-hidden'] });
+  new MutationObserver(function(){
+    if(modal.getAttribute('aria-hidden')!=='false'){ unlockScroll(); }
+  }).observe(modal,{attributes:true,attributeFilter:['aria-hidden']});
 
-  // Al abandonar la página, asegúrate de devolver el scroll
-  window.addEventListener('beforeunload', () => { document.body.style.overflow = ''; });
+  window.addEventListener('beforeunload', unlockScroll);
 })();
 </script>
-<!-- ==== /WHY-MODAL ==== -->
 </body>
 </html>
