@@ -318,6 +318,12 @@
 .stars small{ margin-left:8px; color:#6b7280; font-size:12px; vertical-align:2px; }
 </style>
 
+<style>
+/* Visibilidad robusta del texto "por qué lo recomiendo" */
+.card .reason{ display:none; }
+.card .reason.is-open{ display:block !important; }
+</style>
+
 </head>
 <body>
 <header>
@@ -822,6 +828,50 @@ if (btnDest){
     new MutationObserver(()=>initReasons(grid))
       .observe(grid, { childList:true, subtree:true });
   }
+})();
+</script>
+<script>
+(function(){
+  // Forzar que los paneles arranquen ocultos sin re-ocultar los ya inicializados
+  function initReasons(root=document){
+    root.querySelectorAll('.card .reason').forEach(el=>{
+      if (el.dataset._init) return;
+      el.classList.remove('is-open'); // oculto por defecto
+      el.dataset._init = '1';
+    });
+  }
+  initReasons();
+
+  // Si se añaden tarjetas nuevas, inicialízalas una vez
+  const grid = document.querySelector('.cards');
+  if (grid) {
+    new MutationObserver(m=>{
+      for (const r of m) if (r.addedNodes && r.addedNodes.length) initReasons(grid);
+    }).observe(grid, {childList:true, subtree:true});
+  }
+
+  // Delegación de clicks en cualquier enlace .why dentro de .card
+  document.addEventListener('click', function(ev){
+    const btn = ev.target.closest('.card .why');
+    if (!btn) return;
+    ev.preventDefault();
+
+    const card  = btn.closest('.card');
+    if (!card) return;
+
+    // 1º intenta por id en href (#why-slug) pero solo dentro de la misma tarjeta
+    const href = btn.getAttribute('href') || '';
+    let panel = null;
+    if (href.startsWith('#')) {
+      const candidate = card.querySelector(href);
+      if (candidate) panel = candidate;
+    }
+    // fallback: primer .reason de la tarjeta
+    if (!panel) panel = card.querySelector('.reason');
+    if (!panel) return;
+
+    panel.classList.toggle('is-open'); // abre/cierra de forma estable
+  }, {passive:false});
 })();
 </script>
 </body>
