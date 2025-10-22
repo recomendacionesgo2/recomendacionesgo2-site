@@ -8,7 +8,7 @@ why: Me lo llevo a las obras donde no tenemos linea y funciona perfectamente,
   ademas de conectar los teléfonos de los que estamos alli trabajando si hay que
   hacer pruebas con articulos que necesitan conexión a internet no tenemos que
   esperar que vengan a poner linea la compañía que tengas elegida.
-rating: 4
+rating: 4.6
 featured: false
 draft: false
 ---
