@@ -805,100 +805,28 @@ if (btnDest){
 </script>
 <script>
 (function(){
-  // 1) Delegación de clicks para .why
-  document.addEventListener('click', function(ev){
-    const btn = ev.target.closest('.why');
-    if (!btn) return;
-    ev.preventDefault();
+  // Elimina posibles listeners antiguos
+  document.querySelectorAll('.card .why').forEach(el=>{
+    const clone = el.cloneNode(true);
+    el.replaceWith(clone);
+  });
 
-    // Prioridad: id del href (#why-slug) si existe y está dentro de la misma tarjeta
-   const href = btn.getAttribute('href') || '';
-    let panel = null;
-    if (href.startsWith('#')) {
-      const byId = document.querySelector(href);
-      if (byId && btn.closest('.card')?.contains(byId)) panel = byId;
-    }
-    // Si no hay id o no está en la tarjeta, usa el .reason más cercano en la tarjeta
-    if (!panel) {
-      const card = btn.closest('.card');
-      panel = card?.querySelector('.reason');
-    }
-    if (!panel) return;
-
-    // Toggle visible/oculto
-    const isHidden = getComputedStyle(panel).display === 'none';
-    panel.style.display = isHidden ? 'block' : 'none';
-  }, { passive:false });
-
-  // 2) Asegura que los .reason empiecen ocultos si tienen contenido
-  function initReasons(root=document){
-    root.querySelectorAll('.card .reason').forEach(el=>{
-      if (el.dataset._init) return;
-      // Si tiene texto/HTML, arranca oculto
-      const hasContent = (el.textContent || el.innerHTML || '').trim().length > 0;
-      if (hasContent) el.style.display = 'none';
-      el.dataset._init = '1';
-    });
-  }
-  initReasons();
-
-  // 3) Si las tarjetas se añaden después, vuelve a inicializar
-  const grid = document.querySelector('.cards');
-  if (grid) {
-    new MutationObserver(()=>initReasons(grid))
-      .observe(grid, { childList:true, subtree:true });
-  }
-})();
-</script>
-<script>
-(function(){
-  // Forzar que los paneles arranquen ocultos sin re-ocultar los ya inicializados
-  function initReasons(root=document){
-    root.querySelectorAll('.card .reason').forEach(el=>{
-      if (el.dataset._init) return;
-      el.classList.remove('is-open'); // oculto por defecto
-      el.dataset._init = '1';
-    });
-  }
-  initReasons();
-
-  // Si se añaden tarjetas nuevas, inicialízalas una vez
-  const grid = document.querySelector('.cards');
-  if (grid) {
-    new MutationObserver(m=>{
-      for (const r of m) if (r.addedNodes && r.addedNodes.length) initReasons(grid);
-    }).observe(grid, {childList:true, subtree:true});
+  // Modal base
+  let modal = document.getElementById('why-modal');
+  if (!modal){
+    modal = document.createElement('div');
+    modal.id = 'why-modal';
+    modal.setAttribute('aria-hidden','true');
+    modal.innerHTML = `
+      <div class="wm-backdrop" data-close></div>
+      <div class="wm-dialog" role="dialog" aria-modal="true">
+        <button class="wm-close" aria-label="Cerrar" data-close>✕</button>
+        <div class="wm-content" id="wm-content"></div>
+      </div>`;
+    document.body.appendChild(modal);
   }
 
-  // Delegación de clicks en cualquier enlace .why dentro de .card
-  document.addEventListener('click', function(ev){
-    const btn = ev.target.closest('.card .why');
-    if (!btn) return;
-    ev.preventDefault();
-
-    const card  = btn.closest('.card');
-    if (!card) return;
-
-    // 1º intenta por id en href (#why-slug) pero solo dentro de la misma tarjeta
-    const href = btn.getAttribute('href') || '';
-    let panel = null;
-    if (href.startsWith('#')) {
-      const candidate = card.querySelector(href);
-      if (candidate) panel = candidate;
-    }
-    // fallback: primer .reason de la tarjeta
-    if (!panel) panel = card.querySelector('.reason');
-    if (!panel) return;
-
-    panel.classList.toggle('is-open'); // abre/cierra de forma estable
-  }, {passive:false});
-})();
-</script>
-<script>
-(function(){
-  const modal   = document.getElementById('why-modal');
-  const content = document.getElementById('wm-content');
-
+  const content = modal.querySelector('#wm-content');
   function open(html){
     content.innerHTML = html || '';
     modal.setAttribute('aria-hidden','false');
@@ -909,35 +837,24 @@ if (btnDest){
     content.innerHTML = '';
     document.body.style.overflow = '';
   }
-
-  modal.addEventListener('click', e => {
-    if (e.target && e.target.hasAttribute('data-close')) close();
+  modal.addEventListener('click', e=>{
+    if (e.target.hasAttribute('data-close')) close();
   });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+  document.addEventListener('keydown', e=>{
+    if (e.key==='Escape') close();
+  });
 
-  // Delegación: cualquier click en ".card .why" abre el modal con el texto completo
-  document.addEventListener('click', function(e){
+  // Delegación única — abre el texto en el modal
+  document.addEventListener('click', e=>{
     const link = e.target.closest('.card .why');
     if (!link) return;
     e.preventDefault();
-
     const card = link.closest('.card');
     if (!card) return;
-
-    let html = '';
-    const href = link.getAttribute('href') || '';
-    // 1) Si el href es "#id" y existe ese panel dentro de la MISMA tarjeta, úsalo
-    if (href.startsWith('#')) {
-      const panel = card.querySelector(href);
-      if (panel) html = panel.innerHTML;
-    }
-    // 2) Fallback: primer .reason de la tarjeta
-    if (!html) {
-      const panel = card.querySelector('.reason');
-      if (panel) html = panel.innerHTML;
-    }
-    open(html);
-  }, { passive:false });
+    const reason = card.querySelector('.reason');
+    if (!reason) return;
+    open(reason.innerHTML);
+  }, {passive:false});
 })();
 </script>
 <!-- Modal "Por qué lo recomiendo" -->
