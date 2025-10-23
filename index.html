@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+
 <style>
   :root{ --ink:#111827; --muted:#6b7280; --bg:#ffffff; --panel:#f7f7f7; --beige:#cbb682; --ring:#e5e7eb; --beige-soft:#F9F6F0;}
   [id]{ scroll-margin-top: 70px; }
@@ -36,9 +37,8 @@
     transition: transform .3s ease;
   }
   nav a:hover::after,
-  nav a.active::after{
-    transform: scaleX(1);
-  }
+  nav a.active::after{ transform: scaleX(1); }
+
   .btn-outline{background:#fff;border:1px solid var(--ink);padding:10px 14px;border-radius:6px;font-weight:700;text-decoration:none;color:var(--ink)}
   .btn-primary{background:var(--beige);color:#fff;padding:10px 16px;border-radius:6px;font-weight:700;text-decoration:none}
   .hero-top{padding:36px 20px 48px;text-align:center}
@@ -78,262 +78,79 @@
   .social-purpose h3{font-size:22px;margin:0 0 8px}
   footer{border-top:1px solid var(--ring);background:#fbfbfb}
   .foot{max-width:1120px;margin:0 auto;padding:28px 20px 48px;color:#6b7280}
+
   /* Fondo completo para #quien */
   #quien{position:relative;background:var(--beige-soft)}
   #quien::before{content:"";position:absolute;inset:0;z-index:-1;box-shadow:0 0 0 100vmax var(--beige-soft);clip-path: inset(0 -100vmax);}
-  /* Controles cuadrados, grises y centrados */
-  .carousel-controls{
-    display:flex; justify-content:center; gap:.6rem; margin-top:.6rem;
-  }
+
+  /* Controles del destacado */
+  .carousel-controls{ display:flex; justify-content:center; gap:.6rem; margin-top:.6rem; }
   .carousel-controls button{
     background:#fff; border:1px solid #d1d5db; color:#374151;
-    width:34px; height:34px; border-radius:6px; cursor:pointer;
-    font-weight:600;
-  }
-  /* Revertir centrado en SECCIÓN 5 ESTRELLAS y volver a alineación izquierda */
-  #destacado .trust{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    align-items: start;  /* vuelve a su posición original */
-    padding-top: 0px !important;
-    margin-top: -55px !important;
-    padding-bottom: 60px !important;
-  }
-  #destacado .trust img{
-    justify-self: start;  /* vuelve a alineación izquierda */
-  }
-  #destacado .trust .eyebrow,
-  #destacado .trust h2,
-  #destacado .trust p{
-    text-align: left; /* elimina centrado */
-    margin-left: 0;
-    margin-right: 0;
-  }
-  #destacado .trust a.btn-primary{
-    display: inline-block;
-    margin-left: 0;
-    margin-right: 0;
-  }
-  /* Ajuste fino: bajar ligeramente el contenido interno sin alterar diseño */
-  #destacado .trust > img,
-  #destacado .trust > div{
-    position: relative;
-    top: 57px; /* sube un poco más respecto a la versión anterior */
-  }
-  /* Mover solo la columna de texto y el botón, sin alterar el layout ni el bloque */
-  #destacado .trust > div:nth-of-type(2){
-    transform: translateY(22px); /* ajusta este valor si hace falta */
-    will-change: transform;
+    width:34px; height:34px; border-radius:6px; cursor:pointer; font-weight:600;
   }
 
-/* Marco vertical fijo 4:5 para el destacado */
-#destacado .trust .hero-frame{
-  width:100%;
-  aspect-ratio: 4 / 5;        /* igual que el reloj */
-  overflow:hidden;
-  border-radius:8px;
-  background:#fff;            /* para las bandas si usamos contain */
-}
+  /* Ajustes “5 estrellas” aprobados */
+  #destacado .trust{ display:grid; grid-template-columns:1fr 1fr; align-items:start; padding-top:0!important; margin-top:-55px!important; padding-bottom:60px!important; }
+  #destacado .trust img{ justify-self:start; }
+  #destacado .trust .eyebrow, #destacado .trust h2, #destacado .trust p{ text-align:left; margin-left:0; margin-right:0; }
+  #destacado .trust a.btn-primary{ display:inline-block; margin-left:0; margin-right:0; }
+  #destacado .trust > div:nth-of-type(2){ transform:translateY(22px); will-change:transform; }
 
-/* Modo por defecto: recorta de los lados (apaisadas) sin deformar */
-#destacado .trust .hero-frame img{
-  width:100%;
-  height:100%;
-  object-fit: cover;
-  display:block;
-}
+  /* Marco vertical 4:5 para imagen destacada */
+  #destacado .trust .hero-frame{ width:100%; aspect-ratio:4/5; overflow:hidden; border-radius:8px; background:#fff; margin-top:22px; margin-bottom:clamp(12px,1.5vw,18px); }
 
-/* Si la imagen es apaisada, activamos contain con bandas arriba/abajo */
-#destacado .trust .hero-frame.contain img{
-  object-fit: contain;
-  background:#fff;
-}
+  /* Barra sticky bajo el título de productos */
+  .products-toolbar{ position:sticky; top:82px; z-index:15; background:var(--bg); border-bottom:1px solid var(--ring); margin:8px 0 18px; padding:10px 0; }
+  .products-toolbar .search-wrap{ max-width:460px; }
+  #productSearch{ width:100%; padding:12px 14px; border:1px solid var(--ring); border-radius:8px; font:inherit; }
+  .suggestions{ display:none; position:absolute; margin-top:6px; max-width:460px; background:#fff; border:1px solid var(--ring); border-radius:8px; box-shadow:0 4px 18px rgba(0,0,0,.08); list-style:none; padding:6px 0; }
+  .suggestions li{ padding:10px 12px; cursor:pointer; display:flex; gap:8px; align-items:center; }
+  .suggestions li:hover{ background:#f9fafb; }
+  .suggestions .title{ font-weight:600; }
+  .suggestions .sub{ color:var(--muted); font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:320px; }
+  .is-hidden{ display:none !important; }
 
-/* Mantener los ajustes aprobados del bloque */
-#destacado .trust{
-  padding-top:0 !important;
-  margin-top:-55px !important;
-  padding-bottom:60px !important;
-}
-#destacado .trust > div:nth-of-type(2){
-  transform: translateY(22px); /* si ya estaba, respetar */
-}
+  /* ⭐ Estrellas */
+  .stars{ position:relative; width:110px; height:20px; }
+  .stars::before{ content:"★★★★★"; letter-spacing:2px; font-size:18px; line-height:20px; color:#d1d5db; }
+  .stars::after{ content:"★★★★★"; letter-spacing:2px; font-size:18px; line-height:20px; color:#cbb682; position:absolute; inset:0; width:var(--fill,0%); overflow:hidden; white-space:nowrap; }
+  .stars small{ margin-left:8px; color:#6b7280; font-size:12px; vertical-align:2px; }
 
-/* Deja una separación bajo la imagen para las flechas */
-#destacado .trust .hero-frame{
-  margin-bottom: clamp(12px, 1.5vw, 18px);
-}
-
-/* Asegura que el contenedor del bloque tenga hueco de sobra abajo */
-@media (min-width: 768px){
-  #destacado .trust{
-    padding-bottom: 88px !important; /* antes 60px */
+  /* Texto del acordeón (bajo el botón) */
+  .card .reason{
+    display:none;
+    margin-top:10px;
+    border:1px solid var(--ring);
+    border-radius:8px;
+    padding:10px 12px;
+    background:#fff;
+    white-space:normal;
+    word-break:break-word;
+    max-height:none !important;
+    -webkit-line-clamp:unset !important;
+    overflow:visible !important;
   }
-}
-
-/* Asegurar visibilidad y estilo correcto de las flechas del carrusel */
-#destacado .carousel-controls{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.6rem;
-  margin-top: 0.25rem;
-  position: relative;
-  z-index: 5;                /* siempre encima de la imagen y fondo */
-}
-
-#destacado .carousel-controls button{
-  width: 28px;
-  height: 28px;
-  border-radius: 6px;
-  background: transparent;
-  border: 1px solid #d1d5db; /* gris claro */
-  color: #6b7280;            /* gris medio */
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  z-index: 6;
-  transition: all 0.2s ease;
-}
-
-#destacado .carousel-controls button:hover{
-  background: #e5e7eb;       /* gris claro al pasar el cursor */
-  color: #374151;            /* gris oscuro */
-}
-#destacado .trust .hero-frame{
-  margin-top: 22px;
-}
-#destacado .trust > div:nth-of-type(2){
-  margin-top: 22px;
-}
-/* Barra sticky bajo el título de productos */
-.products-toolbar{
-  position: sticky;
-  top: 82px;              /* debajo del header fijo actual */
-  z-index: 15;
-  background: var(--bg);
-  border-bottom: 1px solid var(--ring);
-  margin: 8px 0 18px;
-  padding: 10px 0;
-}
-.products-toolbar .search-wrap{ max-width: 460px; }
-#productSearch{
-  width: 100%;
-  padding: 12px 14px;
-  border: 1px solid var(--ring);
-  border-radius: 8px;
-  font: inherit;
-}
-.suggestions{
-  display: none;
-  position: absolute;
-  margin-top: 6px;
-  max-width: 460px;
-  background:#fff;
-  border:1px solid var(--ring);
-  border-radius:8px;
-  box-shadow:0 4px 18px rgba(0,0,0,.08);
-  list-style:none;
-  padding:6px 0;
-}
-.suggestions li{
-  padding:10px 12px;
-  cursor:pointer;
-  display:flex; gap:8px; align-items:center;
-}
-.suggestions li:hover{ background:#f9fafb; }
-.suggestions .title{ font-weight:600; }
-.suggestions .sub{ color:var(--muted); font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:320px; }
-.is-hidden{ display:none !important; } /* para ocultar tarjetas sin romper layout */
 </style>
 
 <!-- Contact section style patch (scoped) -->
 <style>
-/* ----- CONTACT SECTION FIX (scoped to #contacto) ----- */
 #contacto .contact{
-  max-width: 680px;
-  margin: 16px auto 0;
-  padding: 20px 20px;
-  background:#fff;
-  border:1px solid var(--ring);
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0,0,0,.03);
+  max-width: 680px; margin:16px auto 0; padding:20px 20px; background:#fff;
+  border:1px solid var(--ring); border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,.03);
 }
-#contacto .contact .field{
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-  margin:10px 0;
+#contacto .contact .field{ display:flex; flex-direction:column; gap:6px; margin:10px 0; }
+#contacto .contact label{ font-weight:600; color:var(--ink); }
+#contacto .contact input,#contacto .contact textarea{
+  width:100%; max-width:100%; box-sizing:border-box; padding:12px 14px; border:1px solid var(--ring); border-radius:8px; font:inherit; background:#fff;
 }
-#contacto .contact label{
-  font-weight: 600;
-  color: var(--ink);
-}
-#contacto .contact input,
-#contacto .contact textarea{
-  width:100%;
-  max-width:100%;
-  box-sizing:border-box;
-  padding:12px 14px;
-  border:1px solid var(--ring);
-  border-radius:8px;
-  font:inherit;
-  background:#fff;
-}
-#contacto .contact textarea{ min-height: 140px; resize: vertical; }
-#contacto .contact .submit{
-  margin-top:12px;
-  background: var(--beige);
-  color:#fff;
-  padding:12px 16px;
-  border:none;
-  border-radius:8px;
-  font-weight:700;
-  cursor:pointer;
-}
+#contacto .contact textarea{ min-height:140px; resize:vertical; }
+#contacto .contact .submit{ margin-top:12px; background:var(--beige); color:#fff; padding:12px 16px; border:none; border-radius:8px; font-weight:700; cursor:pointer; }
 #contacto .note{ color:#4b5563; }
-@media (max-width:720px){
-  #contacto .contact{ padding:16px; border-radius:8px; }
-}
-</style>
-
-<style>
-/* ⭐ Barra de estrellas con relleno proporcional */
-.stars{ position:relative; width:110px; height:20px; }
-.stars::before{
-  content:"★★★★★";
-  letter-spacing:2px;
-  font-size:18px; line-height:20px;
-  color:#d1d5db; /* gris claro de fondo */
-}
-.stars::after{
-  content:"★★★★★";
-  letter-spacing:2px;
-  font-size:18px; line-height:20px;
-  color:#cbb682; /* dorado Go2 */
-  position:absolute; inset:0;
-  width:var(--fill,0%); overflow:hidden;
-  white-space:nowrap;
-}
-.stars small{ margin-left:8px; color:#6b7280; font-size:12px; vertical-align:2px; }
-</style>
-
-<style id="why-modal-styles">
-  .card .reason{display:none!important;}          /* impedir expansión en línea */
-  #why-modal[aria-hidden="true"]{display:none}
-  #why-modal{position:fixed;inset:0;z-index:9999}
-  #why-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.45)}
-  #why-dialog{
-    position:relative;margin:6vh auto;max-width:900px;background:#fff;
-    border:1px solid var(--ring);border-radius:10px;padding:18px
-  }
-  #why-close{
-    position:absolute;top:8px;right:8px;border:1px solid var(--ring);
-    background:#fff;border-radius:6px;padding:6px 10px;cursor:pointer
-  }
-  @media(max-width:860px){#why-dialog{margin:4vh 12px}}
+@media (max-width:720px){ #contacto .contact{ padding:16px; border-radius:8px; } }
 </style>
 </head>
+
 <body>
 <header>
   <div class="container row">
@@ -391,15 +208,18 @@
   <section id="productos" class="section">
     <div class="kicker">RECOMENDACIONES DE CALIDAD</div>
     <h3>Descubre productos que valen la pena</h3>
+
     <div class="products-toolbar" aria-label="Barra de búsqueda">
       <div class="search-wrap">
         <input id="productSearch" type="search" placeholder="Buscar productos (mín. 3 letras)…" autocomplete="off" aria-label="Buscar productos" />
         <ul id="searchSuggestions" class="suggestions" role="listbox" aria-label="Sugerencias"></ul>
       </div>
     </div>
+
     <p id="emptyProductsMsg" style="text-align:center;color:#6b7280;margin:24px 0 8px;font-size:14px">
       Aún no hay productos. Añade el primero desde <a href="/admin" style="color:#6b7280;text-decoration:underline">/admin</a>.
     </p>
+
     <div class="cards" id="productCards"></div>
   </section>
 
@@ -441,14 +261,6 @@
   <footer><div class="foot"><p>© <span id="year"></span> Recomendaciones Go2 — por Sebastián Ferragut</p></div></footer>
 </main>
 
-<div id="why-modal" aria-hidden="true">
-  <div id="why-backdrop" data-why-close></div>
-  <div id="why-dialog" role="dialog" aria-modal="true">
-    <button id="why-close" data-why-close aria-label="Cerrar">✕</button>
-    <div id="why-content"></div>
-  </div>
-</div>
-
 <script>
 if (new URLSearchParams(location.search).get('success') === '1'){
   const ok = document.getElementById('ok'); if(ok) ok.style.display = 'block';
@@ -456,31 +268,26 @@ if (new URLSearchParams(location.search).get('success') === '1'){
 document.getElementById('year').textContent = new Date().getFullYear();
 </script>
 
+<!-- Fit de imagen del destacado -->
 <script>
 (function(){
   var img = document.getElementById('hero-featured-img');
   if(!img) return;
-
   function applyFitMode() {
-    // Esperar a que tenga dimensiones reales
     var w = img.naturalWidth, h = img.naturalHeight;
     if(!w || !h) { setTimeout(applyFitMode, 50); return; }
-    // Si es claramente apaisada, poner bandas arriba/abajo (contain)
-    var isWide = (w / h) > 1.05;  // umbral suave
+    var isWide = (w / h) > 1.05;
     var frame = img.parentElement;
     if(!frame) return;
     frame.classList.toggle('contain', isWide);
   }
-
-  // Ejecutar al cargar y cuando se cambie de slide
   img.addEventListener('load', applyFitMode);
   applyFitMode();
-
-  // Si tu carrusel cambia el src con una función externa, seguimos cubiertos:
   window.__applyHeroFitMode = applyFitMode;
 })();
 </script>
 
+<!-- Resaltado de navegación -->
 <script>
 (function(){
   const navLinks = document.querySelectorAll('header nav a[href^="#"]');
@@ -490,8 +297,6 @@ document.getElementById('year').textContent = new Date().getFullYear();
     const sec = document.querySelector(id);
     if (sec) map[id] = { link:a, sec };
   });
-
-  // IntersectionObserver para activar enlace según sección visible
   const obs = new IntersectionObserver((entries)=>{
     entries.forEach(entry=>{
       const id = '#'+entry.target.id;
@@ -502,10 +307,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
       }
     });
   }, { root:null, rootMargin:"-50% 0px -45% 0px", threshold:0 });
-
   Object.values(map).forEach(({sec}) => obs.observe(sec));
-
-  // al hacer clic, marcar activo inmediatamente
   navLinks.forEach(a=>{
     a.addEventListener('click', ()=>{
       navLinks.forEach(l => l.classList.remove('active'));
@@ -514,6 +316,8 @@ document.getElementById('year').textContent = new Date().getFullYear();
   });
 })();
 </script>
+
+<!-- Render de productos + acordeón simple -->
 <script>
 (async function(){
   const grid = document.querySelector('.cards');
@@ -527,7 +331,6 @@ document.getElementById('year').textContent = new Date().getFullYear();
     }
     if (emptyNote) emptyNote.style.display = 'none';
 
-    // Render tarjetas
     items.forEach(p => {
       const art = document.createElement('article');
       art.className = 'card';
@@ -542,8 +345,8 @@ document.getElementById('year').textContent = new Date().getFullYear();
           <div class="reason" id="why-${p.slug}">${p.why || ''}</div>
         </div>
       `;
-      
-      // Añadir estrellas
+
+      // Estrellas
       const fill = Math.max(0, Math.min(100, (p.rating/5)*100));
       const stars = document.createElement('div');
       stars.className = 'stars';
@@ -551,28 +354,36 @@ document.getElementById('year').textContent = new Date().getFullYear();
       const label = document.createElement('small');
       label.textContent = p.rating.toFixed(1);
       stars.appendChild(label);
-      
+
       const pad = art.querySelector('.pad');
       const sub = art.querySelector('.sub');
-      if (pad && sub) {
-        pad.insertBefore(stars, sub);
-      }
-      
+      if (pad && sub) pad.insertBefore(stars, sub);
+
       grid && grid.appendChild(art);
-      
-      // Toggle de "por qué lo recomiendo"
-      const link = art.querySelector('.why');
+
+      // Acordeón bajo el botón (texto completo)
+      const link  = art.querySelector('.why');
       const panel = art.querySelector('.reason');
       if (link && panel) {
-        panel.style.display = p.why ? 'none' : 'none';
+        panel.style.display = 'none';
+        link.setAttribute('aria-expanded','false');
+
         link.addEventListener('click', (e) => {
           e.preventDefault();
-          panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+
+          // Cierra otros
+          document.querySelectorAll('.card .reason').forEach(r=>{
+            if (r !== panel) r.style.display = 'none';
+          });
+
+          const abrir = panel.style.display !== 'block';
+          panel.style.display = abrir ? 'block' : 'none';
+          link.setAttribute('aria-expanded', abrir ? 'true' : 'false');
+          if (abrir) panel.scrollIntoView({ block:'nearest', behavior:'smooth' });
         });
       }
     });
 
-    // Guardar productos en variable global para otros scripts
     window.__products = items;
   } catch (e) {
     console.error('Error cargando productos:', e);
@@ -580,36 +391,32 @@ document.getElementById('year').textContent = new Date().getFullYear();
   }
 })();
 </script>
+
+<!-- Carrusel destacado (sin tocar diseño) -->
 <script>
 (function(){
-  // Espera utilidades
   function waitFor(cond, timeout=8000, interval=60){
     return new Promise((res, rej)=>{
       const t0 = Date.now();
       (function loop(){
-        try{
-          if (cond()) return res(true);
-        }catch(_){}
+        try{ if (cond()) return res(true); }catch(_){}
         if (Date.now() - t0 > timeout) return rej(new Error('timeout'));
         setTimeout(loop, interval);
       })();
     });
   }
 
-  // Arranque robusto: espera productos, imagen del carrusel y la rejilla
   waitFor(()=> window.__products && document.querySelector('#destacado .hero-frame img') && document.querySelector('.cards'))
   .then(init)
-  .catch(()=>{ /* no hacemos nada si no llega */ });
+  .catch(()=>{});
 
   function init(){
     const img = document.querySelector('#destacado .hero-frame img');
     if (!img) return;
 
-    // Botón por texto exacto (no cambiar HTML)
     const btnDest = Array.from(document.querySelectorAll('a,button'))
       .find(el => el.textContent && el.textContent.trim() === 'Ver producto destacado');
 
-    // Localiza flechas: ids (#prevFeat/#nextFeat) o las 2 primeras de .carousel-controls
     let prev = document.getElementById('prevFeat');
     let next = document.getElementById('nextFeat');
 
@@ -621,67 +428,29 @@ document.getElementById('year').textContent = new Date().getFullYear();
       }
     }
 
-    // Si no hay flechas, créalas no-invasivas (respetando estilos existentes)
-    if (!prev || !next){
-      const ctrl = document.querySelector('.carousel-controls') || (function(){
-        const div = document.createElement('div');
-        div.className = 'carousel-controls';
-        img.parentElement.appendChild(div);
-        return div;
-      })();
-      if (!prev){
-        prev = document.createElement('button');
-        prev.id = 'prevFeat';
-        prev.type = 'button';
-        prev.textContent = '‹';
-        ctrl.appendChild(prev);
-      }
-      if (!next){
-        next = document.createElement('button');
-        next.id = 'nextFeat';
-        next.type = 'button';
-        next.textContent = '›';
-        ctrl.appendChild(next);
+    const items = (window.__products || []).slice();
+
+    const instructionSrc = img.getAttribute('src') || '/images/uploads/hero-5estrellas.png';
+
+    const featuredSlides = items
+      .filter(p => !!p.featured && p.image && p.slug)
+      .map(p => ({ src: p.image, targetId: `prod-${p.slug}` }));
+
+    if (!featuredSlides.length && items.length){
+      const top = items.slice().sort((a,b)=>{
+        if (b.rating !== a.rating) return b.rating - a.rating;
+        return (b.date || '').localeCompare(a.date || '');
+      })[0];
+      if (top && top.image && top.slug){
+        featuredSlides.push({ src: top.image, targetId: `prod-${top.slug}` });
       }
     }
 
-    // Fuente de datos
-    const items = (window.__products || []).slice();
-
-// 1) Construir slides: guía primero + featured después
-const instructionSrc =
-  img.getAttribute('src') || '/images/uploads/hero-5estrellas.png';
-
-const featuredSlides = items
-  .filter(p => !!p.featured && p.image && p.slug)
-  .map(p => ({ src: p.image, targetId: `prod-${p.slug}` }));
-
-// Fallback por si no hay featured: usa top rated
-if (!featuredSlides.length && items.length){
-  const top = items.slice().sort((a,b)=>{
-    if (b.rating !== a.rating) return b.rating - a.rating;
-    return (b.date || '').localeCompare(a.date || '');
-  })[0];
-  if (top && top.image && top.slug){
-    featuredSlides.push({ src: top.image, targetId: `prod-${top.slug}` });
-  }
-}
-
-// La guía SIEMPRE primero
-let slides = [];
-if (instructionSrc) {
-  // La guía apunta al primer featured si existe; si no, no apunta a nada
-  slides.push({
-    src: instructionSrc,
-    targetId: featuredSlides[0]?.targetId || null
-  });
-}
-slides = slides.concat(featuredSlides);
-
-    // Si no hay nada que mostrar, salimos
+    let slides = [];
+    if (instructionSrc) slides.push({ src: instructionSrc, targetId: featuredSlides[0]?.targetId || null });
+    slides = slides.concat(featuredSlides);
     if (!slides.length) return;
 
-    // Preload rápido
     slides.forEach(s => { const im = new Image(); im.src = s.src; });
 
     let i = 0;
@@ -694,37 +463,33 @@ slides = slides.concat(featuredSlides);
       if (btnDest && currentTargetId) btnDest.setAttribute('href', `#${currentTargetId}`);
     }
 
-    // Inicializamos en la guía
     show(0);
 
-    // Flechas (sin cambios)
     if (prev) prev.onclick = e => { e.preventDefault(); show(i - 1); };
     if (next) next.onclick = e => { e.preventDefault(); show(i + 1); };
 
-// 2) Botón "Ver producto destacado"
-if (btnDest){
-  btnDest.addEventListener('click', (e)=>{
-    e.preventDefault();
-    // Si estamos en la guía y hay featured, pasa al primero y luego hace scroll
-    if (!currentTargetId && featuredSlides.length){
-      show(1 % slides.length); // avanza desde la guía al 1º featured
-      // Pequeño delay para asegurar pintura de imagen
-      setTimeout(()=>{
-        const node = document.getElementById(slides[i].targetId);
-        if (node) node.scrollIntoView({ behavior:'smooth', block:'start' });
-      }, 50);
-      return;
+    if (btnDest){
+      btnDest.addEventListener('click', (e)=>{
+        e.preventDefault();
+        if (!currentTargetId && featuredSlides.length){
+          show(1 % slides.length);
+          setTimeout(()=>{
+            const node = document.getElementById(slides[i].targetId);
+            if (node) node.scrollIntoView({ behavior:'smooth', block:'start' });
+          }, 50);
+          return;
+        }
+        if (currentTargetId){
+          const node = document.getElementById(currentTargetId);
+          if (node) node.scrollIntoView({ behavior:'smooth', block:'start' });
+        }
+      });
     }
-    // Si ya estamos en un featured, scroll directo
-    if (currentTargetId){
-      const node = document.getElementById(currentTargetId);
-      if (node) node.scrollIntoView({ behavior:'smooth', block:'start' });
-    }
-  });
-}
   }
 })();
 </script>
+
+<!-- Buscador -->
 <script>
 (function(){
   const grid = document.querySelector('.cards');
@@ -732,7 +497,6 @@ if (btnDest){
   const list  = document.getElementById('searchSuggestions');
   if(!grid || !input || !list) return;
 
-  // Indexación de tarjetas (título + resumen)
   let index = [];
   const buildIndex = () => {
     index = Array.from(grid.querySelectorAll('article.card')).map(card=>{
@@ -744,11 +508,9 @@ if (btnDest){
   };
   buildIndex();
 
-  // Reindexa si el grid cambia (p.ej., tras fetch)
   const mo = new MutationObserver(buildIndex);
   mo.observe(grid, { childList: true });
 
-  // Utilidades
   const showAll = () => index.forEach(x => x.card.classList.remove('is-hidden'));
   const clearSuggestions = () => { list.innerHTML = ''; list.style.display = 'none'; };
   const renderSuggestions = (hits) => {
@@ -762,7 +524,6 @@ if (btnDest){
     list.style.display = 'block';
   };
 
-  // Interacción
   input.addEventListener('input', () => {
     const q = input.value.trim().toLowerCase();
     if (q.length < 3){
@@ -771,7 +532,6 @@ if (btnDest){
       return;
     }
     const hits = index.filter(x => x.haystack.includes(q));
-    // Filtra tarjetas
     index.forEach(x => x.card.classList.toggle('is-hidden', !hits.includes(x)));
     renderSuggestions(hits);
   });
@@ -784,7 +544,6 @@ if (btnDest){
     }
   });
 
-  // Click en sugerencias -> scroll a tarjeta y mantén visibles solo coincidencias
   list.addEventListener('click', (e)=>{
     const li = e.target.closest('li[data-id]');
     if(!li) return;
@@ -796,203 +555,7 @@ if (btnDest){
     }
   });
 
-  // Ocultar sugerencias al perder foco (ligero retardo por clicks)
   input.addEventListener('blur', ()=> setTimeout(clearSuggestions, 150));
-})();
-</script>
-<script>
-(function(){
-  var modal = document.getElementById('why-modal');
-  var content = document.getElementById('why-content');
-  if(!modal || !content) return;
-
-  function lockScroll(){ document.body.style.overflow='hidden'; }
-  function unlockScroll(){ document.body.style.overflow=''; }
-
-  function openWhy(html){
-    content.innerHTML = (html && String(html).trim()) ? html : '<p>(Sin texto todavía)</p>';
-    modal.setAttribute('aria-hidden','false'); lockScroll();
-  }
-  function closeWhy(){
-    modal.setAttribute('aria-hidden','true'); unlockScroll(); content.innerHTML='';
-  }
-
-  modal.addEventListener('click', function(e){
-    if(e.target && (e.target.hasAttribute('data-why-close') || e.target.id==='why-backdrop')) closeWhy();
-  });
-  document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeWhy(); });
-
-  document.addEventListener('click', function(e){
-    var a = e.target.closest('.card a.why');
-    if(!a) return;
-    var ref = (a.getAttribute('data-open') || a.getAttribute('href') || '').replace(/^#/,'');
-    var src = ref ? document.getElementById(ref) : null;
-    if(!src){
-      var card = a.closest('.card');
-      src = card ? card.querySelector('.reason') : null;
-    }
-    var html = src ? src.innerHTML : '';
-    if(!html || !String(html).trim()){ return; }
-    e.preventDefault(); e.stopImmediatePropagation();
-    openWhy(html);
-  }, true);
-
-  new MutationObserver(function(){
-    if(modal.getAttribute('aria-hidden')!=='false'){ unlockScroll(); }
-  }).observe(modal,{attributes:true,attributeFilter:['aria-hidden']});
-
-  window.addEventListener('beforeunload', unlockScroll);
-})();
-</script>
-  <!-- Acordeón: "Ver por qué lo recomiendo" (despliega bajo el botón) -->
-<style>
-  /* Asegura que el texto se vea completo y sin recortes */
-  .card .reason{
-    display:none;                      /* oculto por defecto */
-    margin-top:10px;
-    border:1px solid var(--ring);
-    border-radius:8px;
-    padding:10px 12px;
-    background:#fff;
-    max-height:none !important;
-    overflow:visible !important;
-    -webkit-line-clamp:unset !important;
-    white-space:normal !important;
-    word-break:break-word;
-  }
-
-  /* Despliegue suave (opcional) */
-  .card .reason[data-anim="on"]{
-    display:block;
-    max-height:0; overflow:hidden;
-    transition:max-height .25s ease;
-  }
-  .card .reason[data-anim="on"][data-open="1"]{
-    max-height:1000px; /* valor grande para no cortar textos cortos */
-  }
-</style>
-
-<script>
-(function(){
-  // Activa animación suave SOLO si no hay estilos que lo impidan
-  document.querySelectorAll('.card .reason').forEach(p=>{
-    // Si ya estaba visible por otros estilos, lo dejamos quieto
-    if (getComputedStyle(p).display !== 'none') p.style.display = 'none';
-    p.setAttribute('data-anim','on');
-    p.setAttribute('data-open','0');
-  });
-
-  document.addEventListener('click', function(e){
-    const btn = e.target.closest('.card a.why');
-    if(!btn) return;
-
-    const card = btn.closest('.card');
-    const panel = card ? card.querySelector('.reason') : null;
-    if(!panel) return;
-
-    e.preventDefault(); // no saltar a #id ni otros manejadores
-    e.stopImmediatePropagation();
-
-    // Cierra cualquier otro panel abierto
-    document.querySelectorAll('.card .reason[data-open="1"]').forEach(p=>{
-      if (p !== panel){
-        p.setAttribute('data-open','0');
-        // si no animamos, ocultamos directo
-        if (p.getAttribute('data-anim') !== 'on') p.style.display = 'none';
-      }
-    });
-
-    // Toggle actual
-    const isOpen = panel.getAttribute('data-open') === '1';
-    if (isOpen){
-      panel.setAttribute('data-open','0');
-      if (panel.getAttribute('data-anim') !== 'on') panel.style.display = 'none';
-      btn.setAttribute('aria-expanded','false');
-    } else {
-      panel.setAttribute('data-open','1');
-      if (panel.getAttribute('data-anim') !== 'on') panel.style.display = 'block';
-      btn.setAttribute('aria-expanded','true');
-      // Que quede a la vista si está abajo
-      panel.scrollIntoView({block:'nearest', behavior:'smooth'});
-    }
-  }, true);
-})();
-</script>
-  <style>
-  /* 1) Oculta cualquier modal viejo que pueda quedar */
-  #why-modal, .wm-backdrop { display:none !important; }
-  body { overflow: auto !important; }
-
-  /* 2) Estilo del bloque de texto (aparece debajo del botón) */
-  .card .reason{
-    display:none;
-    margin-top:10px;
-    border:1px solid var(--ring);
-    border-radius:8px;
-    padding:10px 12px;
-    background:#fff;
-    white-space:normal;
-    word-break:break-word;
-    max-height:none !important;             /* por si alguien lo recortaba */
-    -webkit-line-clamp:unset !important;    /* idem */
-    overflow:visible !important;
-  }
-</style>
-
-<script>
-(function(){
-  // 0) Si existe el modal viejo, quítalo y asegura el scroll
-  var old = document.getElementById('why-modal');
-  if (old) old.remove();
-  document.body.style.overflow = '';
-
-  // 1) Handler minimal que abre/cierra el texto completo debajo del botón
-  function toggleReason(e){
-    e.preventDefault();
-    e.stopPropagation();
-    e.stopImmediatePropagation();
-
-    var card  = this.closest('.card');
-    if(!card) return;
-    var panel = card.querySelector('.reason');
-    if(!panel) return;
-
-    // Cierra otros abiertos
-    document.querySelectorAll('.card .reason').forEach(function(r){
-      if (r !== panel) r.style.display = 'none';
-    });
-
-    // Toggle actual
-    panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
-  }
-
-  // 2) “Limpia” cualquier listener anterior del botón y pon el nuestro
-  function wireButtons(){
-    document.querySelectorAll('.card a.why').forEach(function(btn){
-      // Clonar/reemplazar elimina handlers previos del modal viejo
-      var clone = btn.cloneNode(true);
-      btn.parentNode.replaceChild(clone, btn);
-      clone.addEventListener('click', toggleReason, true);
-      clone.style.cursor = 'pointer';
-    });
-  }
-
-  // 3) Ejecuta ahora y también si más tarjetas se inyectaran
-  if (document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', wireButtons);
-  } else {
-    wireButtons();
-  }
-
-  // 4) Salvaguarda: si algún script intenta abrir otra vez el modal
-  document.addEventListener('click', function(e){
-    var t = e.target;
-    if (t && (t.id === 'why-modal' || t.classList && t.classList.contains('wm-backdrop'))){
-      e.stopImmediatePropagation();
-      e.preventDefault();
-      return false;
-    }
-  }, true);
 })();
 </script>
 </body>
