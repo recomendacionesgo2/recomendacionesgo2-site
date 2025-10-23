@@ -574,4 +574,24 @@ document.getElementById('year').textContent = new Date().getFullYear();
   margin-bottom: 0 !important;
 }
 </style>
+  <style>
+/* Oculta el botón */
+.card a.why{
+  display: none !important;
+}
+
+/* Muestra siempre el texto completo */
+.card .reason{
+  display: block !important;
+  margin-top: 12px;
+  border: 1px solid var(--ring);
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: #fff;
+  white-space: normal !important;
+  word-break: break-word;
+  max-height: none !important;
+  overflow: visible !important;
+}
+</style>
 </html>
