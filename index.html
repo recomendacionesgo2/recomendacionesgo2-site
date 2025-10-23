@@ -844,5 +844,79 @@ if (btnDest){
   window.addEventListener('beforeunload', unlockScroll);
 })();
 </script>
+  <!-- Acordeón: "Ver por qué lo recomiendo" (despliega bajo el botón) -->
+<style>
+  /* Asegura que el texto se vea completo y sin recortes */
+  .card .reason{
+    display:none;                      /* oculto por defecto */
+    margin-top:10px;
+    border:1px solid var(--ring);
+    border-radius:8px;
+    padding:10px 12px;
+    background:#fff;
+    max-height:none !important;
+    overflow:visible !important;
+    -webkit-line-clamp:unset !important;
+    white-space:normal !important;
+    word-break:break-word;
+  }
+
+  /* Despliegue suave (opcional) */
+  .card .reason[data-anim="on"]{
+    display:block;
+    max-height:0; overflow:hidden;
+    transition:max-height .25s ease;
+  }
+  .card .reason[data-anim="on"][data-open="1"]{
+    max-height:1000px; /* valor grande para no cortar textos cortos */
+  }
+</style>
+
+<script>
+(function(){
+  // Activa animación suave SOLO si no hay estilos que lo impidan
+  document.querySelectorAll('.card .reason').forEach(p=>{
+    // Si ya estaba visible por otros estilos, lo dejamos quieto
+    if (getComputedStyle(p).display !== 'none') p.style.display = 'none';
+    p.setAttribute('data-anim','on');
+    p.setAttribute('data-open','0');
+  });
+
+  document.addEventListener('click', function(e){
+    const btn = e.target.closest('.card a.why');
+    if(!btn) return;
+
+    const card = btn.closest('.card');
+    const panel = card ? card.querySelector('.reason') : null;
+    if(!panel) return;
+
+    e.preventDefault(); // no saltar a #id ni otros manejadores
+    e.stopImmediatePropagation();
+
+    // Cierra cualquier otro panel abierto
+    document.querySelectorAll('.card .reason[data-open="1"]').forEach(p=>{
+      if (p !== panel){
+        p.setAttribute('data-open','0');
+        // si no animamos, ocultamos directo
+        if (p.getAttribute('data-anim') !== 'on') p.style.display = 'none';
+      }
+    });
+
+    // Toggle actual
+    const isOpen = panel.getAttribute('data-open') === '1';
+    if (isOpen){
+      panel.setAttribute('data-open','0');
+      if (panel.getAttribute('data-anim') !== 'on') panel.style.display = 'none';
+      btn.setAttribute('aria-expanded','false');
+    } else {
+      panel.setAttribute('data-open','1');
+      if (panel.getAttribute('data-anim') !== 'on') panel.style.display = 'block';
+      btn.setAttribute('aria-expanded','true');
+      // Que quede a la vista si está abajo
+      panel.scrollIntoView({block:'nearest', behavior:'smooth'});
+    }
+  }, true);
+})();
+</script>
 </body>
 </html>
