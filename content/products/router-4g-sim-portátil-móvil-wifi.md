@@ -1,5 +1,5 @@
 ---
-title: Router 4G SIM Portátil Móvil, WiFi
+title: Router 4G
 category: Tecnología
 image: /images/uploads/captura-de-pantalla-2025-10-22-a-las-7.47.16.png
 summary: Router 4G SIM Portátil Móvil, WiFi
