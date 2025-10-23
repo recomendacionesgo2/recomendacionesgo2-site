@@ -918,5 +918,82 @@ if (btnDest){
   }, true);
 })();
 </script>
+  <style>
+  /* 1) Oculta cualquier modal viejo que pueda quedar */
+  #why-modal, .wm-backdrop { display:none !important; }
+  body { overflow: auto !important; }
+
+  /* 2) Estilo del bloque de texto (aparece debajo del botón) */
+  .card .reason{
+    display:none;
+    margin-top:10px;
+    border:1px solid var(--ring);
+    border-radius:8px;
+    padding:10px 12px;
+    background:#fff;
+    white-space:normal;
+    word-break:break-word;
+    max-height:none !important;             /* por si alguien lo recortaba */
+    -webkit-line-clamp:unset !important;    /* idem */
+    overflow:visible !important;
+  }
+</style>
+
+<script>
+(function(){
+  // 0) Si existe el modal viejo, quítalo y asegura el scroll
+  var old = document.getElementById('why-modal');
+  if (old) old.remove();
+  document.body.style.overflow = '';
+
+  // 1) Handler minimal que abre/cierra el texto completo debajo del botón
+  function toggleReason(e){
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+
+    var card  = this.closest('.card');
+    if(!card) return;
+    var panel = card.querySelector('.reason');
+    if(!panel) return;
+
+    // Cierra otros abiertos
+    document.querySelectorAll('.card .reason').forEach(function(r){
+      if (r !== panel) r.style.display = 'none';
+    });
+
+    // Toggle actual
+    panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
+  }
+
+  // 2) “Limpia” cualquier listener anterior del botón y pon el nuestro
+  function wireButtons(){
+    document.querySelectorAll('.card a.why').forEach(function(btn){
+      // Clonar/reemplazar elimina handlers previos del modal viejo
+      var clone = btn.cloneNode(true);
+      btn.parentNode.replaceChild(clone, btn);
+      clone.addEventListener('click', toggleReason, true);
+      clone.style.cursor = 'pointer';
+    });
+  }
+
+  // 3) Ejecuta ahora y también si más tarjetas se inyectaran
+  if (document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', wireButtons);
+  } else {
+    wireButtons();
+  }
+
+  // 4) Salvaguarda: si algún script intenta abrir otra vez el modal
+  document.addEventListener('click', function(e){
+    var t = e.target;
+    if (t && (t.id === 'why-modal' || t.classList && t.classList.contains('wm-backdrop'))){
+      e.stopImmediatePropagation();
+      e.preventDefault();
+      return false;
+    }
+  }, true);
+})();
+</script>
 </body>
 </html>
