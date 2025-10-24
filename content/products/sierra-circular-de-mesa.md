@@ -1,5 +1,5 @@
 ---
-title: Sierra circular de mesa
+title: Sierra circular
 category: Herramientas
 image: /images/uploads/captura-de-pantalla-2025-10-20-a-las-20.25.18.png
 summary: Sierra circular de mesa
@@ -13,5 +13,6 @@ why: "Hace algo más de un mes que tengo esta sierra y la verdad es que estoy
   que hacer, y lo hace bien."
 rating: 4.8
 featured: false
+draft: true
 date: 2025-10-20
 ---
