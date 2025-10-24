@@ -232,6 +232,72 @@
   #productSearch{ padding:11px 12px; }
 }
 </style>
+  <style>
+/* ===== Base adaptativa (sin tocar tu HTML/JS) ===== */
+
+/* Tipos y contenedor fluidos */
+:root{
+  --step--1: 14px;
+  --step-0: 16px;
+  --step-1: clamp(18px, 2.2vw, 20px);
+  --step-2: clamp(22px, 3.5vw, 32px);
+  --step-3: clamp(28px, 4.5vw, 40px);
+}
+body{ font-size: var(--step-0); }
+h1{ font-size: var(--step-3); line-height: 1.15; }
+h2{ font-size: var(--step-2); line-height: 1.15; }
+h3{ font-size: clamp(20px, 2.6vw, 28px); }
+
+.container{ width:min(1120px, 100%); margin:0 auto; padding-inline:20px; }
+
+/* Imagen destacada: que no se desborde */
+#destacado .trust .hero-frame img{ width:100%; height:auto; display:block; }
+
+/* MODAL más cómodo en móvil */
+.modal .sheet{
+  width: min(720px, 92%);
+  max-height: 88vh;
+  overflow:auto;
+}
+.modal .sheet .pad{ padding:16px; }
+.modal .sheet .reason{
+  display:block !important;
+  max-height:none !important;
+  overflow:visible !important;
+  white-space:pre-wrap;
+}
+
+/* Cartas: quepa bien el contenido */
+.cards{ gap: 18px; }
+.card .pad{ padding:14px; }
+.card h4{ margin:4px 0 6px; }
+.sub{ font-size: var(--step--1); }
+
+/* Barra de búsqueda: que no tape cosas */
+.products-toolbar{ top: 72px; }
+
+/* ===== Puntos de corte ===== */
+
+/* Tablet y abajo */
+@media (max-width: 960px){
+  .trust{ grid-template-columns:1fr; gap:18px; padding:28px 20px; }
+  #destacado .trust{ margin-top:0 !important; padding-top:18px !important; padding-bottom:28px !important; }
+  .hero-top{ padding:28px 16px 32px; }
+  .section{ padding:28px 16px; }
+  .products-toolbar{ top:66px; }
+}
+
+/* Móvil */
+@media (max-width: 640px){
+  .cards{ grid-template-columns: 1fr; }
+  .trust h2{ font-size: clamp(22px, 6vw, 28px); }
+  .trust p{ font-size: 16px; }
+  .stars{ transform: scale(.95); transform-origin:left; }
+  nav{ gap: 14px; }
+  .hero-top h1{ font-size: clamp(24px, 7vw, 30px); }
+  #productSearch{ padding:10px 12px; }
+}
+</style>
 </head>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
@@ -637,41 +703,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
 </script>
 </body>
   <style>
-/* Baja todo el bloque de la sección 5 estrellas */
-#destacado .trust {
-  margin-top: 55px !important;
-}
-</style>
-  <style>
-/* Reduce márgenes superior e inferior del bloque 5 estrellas */
-#destacado .trust {
-  padding-top: 20px !important;    /* antes eran ~90px */
-  padding-bottom: 20px !important; /* antes eran ~60px */
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
-}
-</style>
-  <style>
-/* Oculta el botón */
-.card a.why{
-  display: none !important;
-}
 
-/* Muestra siempre el texto completo */
-.card .reason{
-  display: block !important;
-  margin-top: 12px;
-  border: 1px solid var(--ring);
-  border-radius: 8px;
-  padding: 10px 12px;
-  background: #fff;
-  white-space: pre-line; !important;
-  word-break: break-word;
-  max-height: none !important;
-  overflow: visible !important;
-  white-space: pre-wrap;
-}
-</style>
   <div id="productModal" class="modal" aria-hidden="true">
   <div class="sheet"></div>
   <button type="button" class="close" aria-label="Cerrar">✕</button>
