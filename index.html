@@ -166,12 +166,71 @@
   max-width: 920px;
   margin: 0 auto;
 }
-  /* Modal de producto */
-.modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.45);z-index:60}
-.modal.open{display:flex}
-.modal .sheet{max-width:720px;width:90%;background:#fff;border-radius:12px;overflow:auto;max-height:85vh;box-shadow:0 10px 40px rgba(0,0,0,.25)}
-.modal .close{position:absolute;top:14px;right:14px;background:#fff;border:1px solid var(--ring);border-radius:8px;padding:6px 10px;cursor:pointer;font-weight:700}
-.modal .sheet img.thumb{border-bottom:1px solid var(--ring)}
+/* Modal de producto (compacto y responsive) */
+.modal{
+  position:fixed; inset:0;
+  display:none; align-items:center; justify-content:center;
+  background:rgba(0,0,0,.45); z-index:60;
+  padding:16px;            /* margen interior para pantallas pequeñas */
+}
+.modal.open{ display:flex; }
+
+.modal .sheet{
+  width:min(680px, 92vw);
+  max-height:82vh;         /* altura máxima de la hoja */
+  background:#fff; border-radius:12px; overflow:auto;
+  box-shadow:0 10px 40px rgba(0,0,0,.25);
+}
+
+/* botón cerrar */
+.modal .close{
+  position:absolute; top:10px; right:10px;
+  background:#fff; border:1px solid var(--ring);
+  border-radius:10px; padding:6px 10px; cursor:pointer; font-weight:700;
+}
+
+/* dentro del contenido reutilizado de la card */
+.modal .sheet .thumb{
+  width:100%; height:auto; display:block;
+  border-bottom:1px solid var(--ring);
+  aspect-ratio: 16/9;         /* recorte agradable en escritorio */
+  object-fit:cover;
+  max-height:40vh;            /* la imagen nunca ocupa más del 40% de la pantalla */
+}
+
+.modal .sheet .pad{ padding:16px; }
+
+/* Asegura que el texto largo se lea bien */
+.modal .sheet .reason{
+  display:block !important;
+  margin-top:12px;
+  border:1px solid var(--ring); border-radius:8px;
+  padding:10px 12px; background:#fff;
+  white-space:pre-wrap; word-break:break-word;
+  max-height:unset !important; overflow:visible !important;
+}
+
+/* Responsive móvil */
+@media (max-width:640px){
+  .modal{ padding:10px; }
+  .modal .sheet{ width:96vw; max-height:86vh; border-radius:10px; }
+  .modal .close{ top:8px; right:8px; }
+  .modal .sheet .pad{ padding:14px; }
+  .modal .sheet .thumb{
+    aspect-ratio: 4/3;        /* un poco más alta en móvil para que se vea bien */
+    max-height:36vh;
+  }
+}
+  /* Ajustes móviles generales */
+@media (max-width:640px){
+  .container{ padding:16px; }
+  .section{ padding:28px 16px; }
+  .trust{ gap:22px; }
+  .trust h2{ font-size:32px; line-height:1.15; }
+  .cards{ grid-template-columns:1fr !important; }  /* 1 columna segura */
+  .btn-primary, .btn-outline{ padding:10px 14px; font-weight:700; }
+  #productSearch{ padding:11px 12px; }
+}
 </style>
 </head>
 
