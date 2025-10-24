@@ -65,14 +65,8 @@
   .card h4{font-size:18px;margin:4px 0}
   .sub{color:var(--muted);font-size:14px}
   .buy{display:inline-block;margin-top:10px;background:var(--ink);color:#fff;padding:10px 14px;border-radius:6px;text-decoration:none;font-weight:700}
-  .why{display:none !important;}
-  .card .reason{
-  display:block !important;
-  white-space:pre-wrap;
-  word-break:break-word;
-  max-height:none !important;
-  overflow:visible !important;
-}
+  .why{display:inline-block;margin-top:10px;border:1px solid var(--ring);padding:8px 12px;border-radius:6px;text-decoration:none;font-weight:600;color:var(--ink)}
+  .why + .reason{display:none;margin-top:10px;background:#fbfbfb;border:1px dashed var(--ring);padding:10px;border-radius:6px;font-size:14px}
   .criteria{background:#f6f6f6;border-top:1px solid var(--ring);border-bottom:1px solid var(--ring)}
   .criteria .inner{max-width:960px;margin:0 auto;padding:40px 20px;text-align:center}
   .criteria h3{font-size:28px;margin:0 0 10px}
@@ -329,7 +323,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
   const grid = document.querySelector('.cards');
   const emptyNote = document.getElementById('emptyProductsMsg');
   try {
-   const res = await fetch('/content/products/products.json', { cache: 'no-store' });
+    const res = await fetch('/assets/products.json', { cache: 'no-store' });
     const items = res.ok ? await res.json() : [];
     if (!items.length) {
       if (emptyNote) emptyNote.style.display = 'block';
@@ -340,16 +334,17 @@ document.getElementById('year').textContent = new Date().getFullYear();
     items.forEach(p => {
       const art = document.createElement('article');
       art.className = 'card';
-      art.id = `prod-${p.slug}`;
-      art.innerHTML = `
+      art.id = prod-${p.slug};
+      art.innerHTML = 
         <img class="thumb" src="${p.image || ''}" alt="${p.title || ''}">
         <div class="pad">
           <h4>${p.title || ''}</h4>
           <div class="sub">${p.summary || ''}</div>
           <a class="buy" href="${p.buy_url || '#'}" target="_blank" rel="nofollow noopener">Comprar en Amazon</a>
-          <div class="reason" id="why-${p.slug}" style="display:block">${p.why || ''}</div>
+          <a class="why" data-open="why-${p.slug}" href="#why-${p.slug}">Ver por qué lo recomiendo</a>
+          <div class="reason" id="why-${p.slug}">${p.why || ''}</div>
         </div>
-      `;
+      ;
 
       // Estrellas
       const fill = Math.max(0, Math.min(100, (p.rating/5)*100));
@@ -366,7 +361,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
 
       grid && grid.appendChild(art);
 
-     
+      // Acordeón bajo el botón (texto completo)
       const link  = art.querySelector('.why');
       const panel = art.querySelector('.reason');
       if (link && panel) {
@@ -439,7 +434,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
 
     const featuredSlides = items
       .filter(p => !!p.featured && p.image && p.slug)
-      .map(p => ({ src: p.image, targetId: `prod-${p.slug}` }));
+      .map(p => ({ src: p.image, targetId: prod-${p.slug} }));
 
     if (!featuredSlides.length && items.length){
       const top = items.slice().sort((a,b)=>{
@@ -447,7 +442,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
         return (b.date || '').localeCompare(a.date || '');
       })[0];
       if (top && top.image && top.slug){
-        featuredSlides.push({ src: top.image, targetId: `prod-${top.slug}` });
+        featuredSlides.push({ src: top.image, targetId: prod-${top.slug} });
       }
     }
 
@@ -465,7 +460,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
       i = (n + slides.length) % slides.length;
       img.src = slides[i].src;
       currentTargetId = slides[i].targetId || null;
-      if (btnDest && currentTargetId) btnDest.setAttribute('href', `#${currentTargetId}`);
+      if (btnDest && currentTargetId) btnDest.setAttribute('href', #${currentTargetId});
     }
 
     show(0);
@@ -521,10 +516,10 @@ document.getElementById('year').textContent = new Date().getFullYear();
   const renderSuggestions = (hits) => {
     if (!hits.length) { clearSuggestions(); return; }
     list.innerHTML = hits.slice(0,6).map(h=>(
-      `<li role="option" data-id="${h.id}">
+      <li role="option" data-id="${h.id}">
          <span class="title">${h.ttl}</span>
          <span class="sub">${h.sub}</span>
-       </li>`
+       </li>
     )).join('');
     list.style.display = 'block';
   };
@@ -593,23 +588,10 @@ document.getElementById('year').textContent = new Date().getFullYear();
   border-radius: 8px;
   padding: 10px 12px;
   background: #fff;
-  white-space: pre-line; !important;
+  white-space: normal !important;
   word-break: break-word;
   max-height: none !important;
   overflow: visible !important;
-  white-space: pre-wrap;
 }
 </style>
-  .card .reason{
-  display:block !important;
-  margin-top:12px;
-  border:1px solid var(--ring);
-  border-radius:8px;
-  padding:10px 12px;
-  background:#fff;
-  white-space:pre-wrap;      /* respeta saltos de línea y muestra todo */
-  word-break:break-word;
-  max-height:none !important;
-  overflow:visible !important;
-}
 </html>
