@@ -417,7 +417,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
 })();
 </script>
 
-<!-- Carrusel destacado (con modal) -->
+<!-- Carrusel destacado (con modal y toast) -->
 <script>
 (function(){
   const img  = document.querySelector('#destacado .hero-frame img');
@@ -426,19 +426,18 @@ document.getElementById('year').textContent = new Date().getFullYear();
   const btn  = Array.from(document.querySelectorAll('a,button'))
     .find(el => el.textContent && el.textContent.trim() === 'Ver producto destacado');
 
-  if (!img || !prev || !next) return;
+  if (!img || !prev || !next || !btn) return;
 
-  function whenProductsReady(done){
-    const grid = document.querySelector('.cards');
-    if (!grid) return;
-    const firstThumb = grid.querySelector('img.thumb');
-    if (firstThumb) { done(); return; }
-    const mo = new MutationObserver(()=>{
-      if (grid.querySelector('img.thumb')) { mo.disconnect(); done(); }
-    });
-    mo.observe(grid, { childList:true, subtree:true });
+  // Avisos cortos (toast)
+  function showToast(msg){
+    const t = document.getElementById('toast');
+    if(!t) return;
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(()=> t.classList.remove('show'), 2200);
   }
 
+  // Modal sencillo: reusa el HTML de la tarjeta
   function openModal(targetId){
     const m = document.getElementById('productModal');
     const sheet = m?.querySelector('.sheet');
@@ -446,7 +445,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
     const card = document.getElementById(targetId);
     if(!card) return;
 
-    sheet.innerHTML = card.innerHTML;   // reutilizamos la tarjeta tal cual
+    sheet.innerHTML = card.innerHTML;
     m.classList.add('open');
     m.setAttribute('aria-hidden','false');
 
@@ -456,60 +455,57 @@ document.getElementById('year').textContent = new Date().getFullYear();
     m.addEventListener('click', (e)=>{ if(e.target===m) hide(); }, { once:true });
   }
 
-  whenProductsReady(()=>{
-    const firstCard = document.querySelector('.cards article.card');
-    const firstImg  = firstCard?.querySelector('img.thumb')?.getAttribute('src') || null;
-    const firstId   = firstCard?.id || null;
+  // Espera a que existan las tarjetas para construir las diapositivas
+  function whenCardsReady(done){
+    const grid = document.querySelector('.cards');
+    if (!grid) return;
+    const hasCard = !!grid.querySelector('article.card img.thumb');
+    if (hasCard) { done(); return; }
+    const mo = new MutationObserver(()=>{
+      if (grid.querySelector('article.card img.thumb')) { mo.disconnect(); done(); }
+    });
+    mo.observe(grid, { childList:true, subtree:true });
+  }
 
-    const slides = [
-      { src: '/images/uploads/hero-5estrellas.png', targetId: firstId },
-      ...(firstImg ? [{ src: firstImg, targetId: firstId }] : [])
-    ];
+  whenCardsReady(()=>{
+    // 1ª slide: imagen 5★ sin producto asociado (targetId:null)
+    const slides = [{ src:'/images/uploads/hero-5estrellas.png', targetId:null }];
+
+    // Resto: una slide por tarjeta existente
+    document.querySelectorAll('.cards article.card').forEach(card=>{
+      const src = card.querySelector('img.thumb')?.getAttribute('src') || '';
+      const id  = card.id || null;
+      if (src && id) slides.push({ src, targetId:id });
+    });
+
+    if (!slides.length) return;
 
     let i = 0;
     function show(n){
       i = (n + slides.length) % slides.length;
       img.src = slides[i].src;
-      if (btn && slides[i].targetId) btn.setAttribute('href', '#' + slides[i].targetId);
+      // No tocamos href del botón: el comportamiento lo controlamos en el click
     }
 
-    prev.onclick = (e)=>{ e.preventDefault(); if (slides.length > 1) show(i - 1); };
-    next.onclick = (e)=>{ e.preventDefault(); if (slides.length > 1) show(i + 1); };
+    prev.addEventListener('click', (e)=>{ e.preventDefault(); if (slides.length>1) show(i-1); });
+    next.addEventListener('click', (e)=>{ e.preventDefault(); if (slides.length>1) show(i+1); });
 
-   btnDest.addEventListener('click', (e)=>{
-  e.preventDefault();
+    btn.addEventListener('click', (e)=>{
+      e.preventDefault();
+      const current = slides[i];
+      if (!current.targetId){
+        // Estamos en la lámina 5★
+        showToast('Para ver productos 5★, usa las flechas y selecciona uno.');
+        return;
+      }
+      // Abrir pop-up del producto actual
+      openModal(current.targetId);
+    });
 
-  const slide = slides[i];
-  const id = slide?.targetId || null; // p.ej. "prod-router-4g..."
-
-  // Aviso si estamos en la lámina 5★ (sin producto asociado)
-  if (!id){
-    showToast('Para ver productos 5★, usa las flechas y selecciona uno.');
-    return;
-  }
-
-  // Siempre abrir modal del producto (sin scroll)
-  openModal(id);
-});
-
-  // Si estamos en la lámina 5★ (sin producto asociado), NO cambiar de slide
-  if (!id){
-    showToast('Para ver productos 5★, usa las flechas y selecciona uno.');
-    return;
-  }
-
-  // Si el héroe está visible -> abre modal; si no, hace scroll a la tarjeta
-  const r = img.getBoundingClientRect();
-  const visible = r.top < window.innerHeight && r.bottom > 0;
-  if (visible) {
-    openModal(id);
-  } else {
-    document.getElementById(id)?.scrollIntoView({ behavior:'smooth', block:'start' });
-  }
-});
     show(0);
   });
 })();
+
 </script>
 
 <!-- Buscador -->
