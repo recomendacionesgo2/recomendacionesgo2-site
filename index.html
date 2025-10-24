@@ -14,67 +14,68 @@
   [id]{ scroll-margin-top: 70px; }
   @media (max-width: 1024px) { [id] { scroll-margin-top: 55px; } }
   @media (max-width: 640px)  { [id] { scroll-margin-top: 40px; } }
-  *{box-sizing:border-box} html{scroll-behavior:smooth}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
   body{margin:0;color:var(--ink);background:var(--bg);font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.6;}
+
   header{border-bottom:1px solid var(--ring);background:#fff;position:sticky;top:0;z-index:20}
   .container{max-width:1120px;margin:0 auto;padding:18px 20px}
   .row{display:flex;align-items:center;gap:18px}
   .brand{font-family:Montserrat,system-ui,sans-serif;font-weight:700;font-size:22px}
   nav{margin-left:auto;display:flex;gap:26px;font-weight:600;letter-spacing:.2px}
-  nav a{
-    position: relative;
-    color:var(--ink);
-    text-decoration: none;
-  }
+  nav a{ position: relative; color:var(--ink); text-decoration: none; }
   nav a::after{
-    content:"";
-    position:absolute;
-    left:0; bottom:-6px;
-    width:100%; height:2px;
-    background: var(--beige);
-    transform: scaleX(0);
-    transform-origin:left;
-    transition: transform .3s ease;
+    content:""; position:absolute; left:0; bottom:-6px; width:100%; height:2px;
+    background: var(--beige); transform: scaleX(0); transform-origin:left; transition: transform .3s ease;
   }
-  nav a:hover::after,
-  nav a.active::after{ transform: scaleX(1); }
+  nav a:hover::after, nav a.active::after{ transform: scaleX(1); }
 
   .btn-outline{background:#fff;border:1px solid var(--ink);padding:10px 14px;border-radius:6px;font-weight:700;text-decoration:none;color:var(--ink)}
   .btn-primary{background:var(--beige);color:#fff;padding:10px 16px;border-radius:6px;font-weight:700;text-decoration:none}
+
   .hero-top{padding:36px 20px 48px;text-align:center}
   .label{font-size:12px;letter-spacing:.15em;color:#555;}
   h1,h2,h3{font-family:Montserrat,system-ui,sans-serif;margin:0}
   .hero-top h1{font-size:40px;margin:10px 0 16px}
+
   .band{background:#fafafa;border-top:1px solid var(--ring);border-bottom:1px solid var(--ring);padding-top:8px !important;padding-bottom:8px !important}
   .featured, .section-5{padding-top:92px;padding-bottom:60px}
+
   .trust{max-width:1120px;margin:0 auto;padding:48px 20px;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;position:relative}
   .trust img{width:100%;border-radius:4px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
   .trust .media-wrap{display:flex;flex-direction:column;align-items:center}
   .eyebrow{font-size:14px;letter-spacing:.15em;color:var(--beige);font-weight:700;margin-bottom:12px}
   .trust h2{font-size:54px;font-weight:700;line-height:1.1;margin:0 0 14px}
   .trust p{font-size:20px;color:#4b5563;margin:0 0 22px}
+
   .kicker{font-size:13px;letter-spacing:.18em;color:var(--beige);font-weight:800}
   .section{max-width:1120px;margin:0 auto;padding:36px 20px}
   .section h3{font-size:32px;margin:4px 0 16px}
+
   .cards{display:grid;gap:22px;grid-template-columns:repeat(3,minmax(0,1fr))}
   @media (max-width:960px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.trust{grid-template-columns:1fr}.trust h2{font-size:36px;line-height:1.08}}
   @media (max-width:640px){.cards{grid-template-columns:1fr}}
+
   .card{background:#fff;border:1px solid var(--ring);border-radius:8px;overflow:hidden}
   .thumb{width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;display:block}
   .pad{padding:16px}
   .card h4{font-size:18px;margin:4px 0}
   .sub{color:var(--muted);font-size:14px}
   .buy{display:inline-block;margin-top:10px;background:var(--ink);color:#fff;padding:10px 14px;border-radius:6px;text-decoration:none;font-weight:700}
-  .why{display:none !important;}
+
+  .why{display:none !important;} /* seguimos ocultando el botón de desplegar */
+
   .criteria{background:#f6f6f6;border-top:1px solid var(--ring);border-bottom:1px solid var(--ring)}
   .criteria .inner{max-width:960px;margin:0 auto;padding:40px 20px;text-align:center}
   .criteria h3{font-size:28px;margin:0 0 10px}
   .criteria p{margin:8px 0;color:#485260}
   .criteria ul{list-style:none;padding:0;margin:12px auto;max-width:720px;color:#485260}
   .criteria li{margin:6px 0}
+
   .social-purpose{background:var(--beige-soft);border-top:1px solid var(--ring)}
   .social-purpose .inner{max-width:960px;margin:0 auto;padding:36px 20px}
   .social-purpose h3{font-size:22px;margin:0 0 8px}
+
   footer{border-top:1px solid var(--ring);background:#fbfbfb}
   .foot{max-width:1120px;margin:0 auto;padding:28px 20px 48px;color:#6b7280}
 
@@ -89,7 +90,7 @@
     width:34px; height:34px; border-radius:6px; cursor:pointer; font-weight:600;
   }
 
-  /* Ajustes “5 estrellas” aprobados */
+  /* Ajustes “5 estrellas” (desktop) */
   #destacado .trust{ display:grid; grid-template-columns:1fr 1fr; align-items:start; padding-top:0!important; margin-top:-55px!important; padding-bottom:60px!important; }
   #destacado .trust img{ justify-self:start; }
   #destacado .trust .eyebrow, #destacado .trust h2, #destacado .trust p{ text-align:left; margin-left:0; margin-right:0; }
@@ -116,191 +117,112 @@
   .stars::after{ content:"★★★★★"; letter-spacing:2px; font-size:18px; line-height:20px; color:#cbb682; position:absolute; inset:0; width:var(--fill,0%); overflow:hidden; white-space:nowrap; }
   .stars small{ margin-left:8px; color:#6b7280; font-size:12px; vertical-align:2px; }
 
-  /* Texto del acordeón (bajo el botón) */
+  /* Texto bajo el botón: SIEMPRE visible y sin recortes */
   .card .reason{
-    display:none;
+    display:block !important;
     margin-top:10px;
     border:1px solid var(--ring);
     border-radius:8px;
     padding:10px 12px;
     background:#fff;
-    white-space:normal;
+    white-space:pre-wrap;
     word-break:break-word;
     max-height:none !important;
-    -webkit-line-clamp:unset !important;
     overflow:visible !important;
-}
-  /* Toast aviso corto */
-.toast{
-  position:fixed; right:20px; bottom:20px;
-  background:#111827; color:#fff; 
-  padding:10px 14px; border-radius:10px;
-  box-shadow:0 8px 24px rgba(0,0,0,.25);
-  opacity:0; transform:translateY(10px);
-  transition:opacity .25s ease, transform .25s ease;
-  z-index:70; pointer-events:none; font-size:14px;
-}
-.toast.show{ opacity:1; transform:translateY(0); }
-</style>
-
-<!-- Contact section style patch (scoped) -->
-<style>
-#contacto .contact{
-  max-width: 680px; margin:16px auto 0; padding:20px 20px; background:#fff;
-  border:1px solid var(--ring); border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,.03);
-}
-#contacto .contact .field{ display:flex; flex-direction:column; gap:6px; margin:10px 0; }
-#contacto .contact label{ font-weight:600; color:var(--ink); }
-#contacto .contact input,#contacto .contact textarea{
-  width:100%; max-width:100%; box-sizing:border-box; padding:12px 14px; border:1px solid var(--ring); border-radius:8px; font:inherit; background:#fff;
-}
-#contacto .contact textarea{ min-height:140px; resize:vertical; }
-#contacto .contact .submit{ margin-top:12px; background:var(--beige); color:#fff; padding:12px 16px; border:none; border-radius:8px; font-weight:700; cursor:pointer; }
-#contacto .note{ color:#4b5563; }
-@media (max-width:720px){ #contacto .contact{ padding:16px; border-radius:8px; } }
-  /* Igualar tamaño de tipografía con "Quién recomienda" */
-#acerca .inner {
-  font-size: 18px !important;
-  line-height: 1.6 !important;
-  color: #374151 !important;
-  max-width: 920px;
-  margin: 0 auto;
-}
-/* Modal de producto (compacto y responsive) */
-.modal{
-  position:fixed; inset:0;
-  display:none; align-items:center; justify-content:center;
-  background:rgba(0,0,0,.45); z-index:60;
-  padding:16px;            /* margen interior para pantallas pequeñas */
-}
-.modal.open{ display:flex; }
-
-.modal .sheet{
-  width:min(680px, 92vw);
-  max-height:82vh;         /* altura máxima de la hoja */
-  background:#fff; border-radius:12px; overflow:auto;
-  box-shadow:0 10px 40px rgba(0,0,0,.25);
-}
-
-/* botón cerrar */
-.modal .close{
-  position:absolute; top:10px; right:10px;
-  background:#fff; border:1px solid var(--ring);
-  border-radius:10px; padding:6px 10px; cursor:pointer; font-weight:700;
-}
-
-/* dentro del contenido reutilizado de la card */
-.modal .sheet .thumb{
-  width:100%; height:auto; display:block;
-  border-bottom:1px solid var(--ring);
-  aspect-ratio: 16/9;         /* recorte agradable en escritorio */
-  object-fit:cover;
-  max-height:40vh;            /* la imagen nunca ocupa más del 40% de la pantalla */
-}
-
-.modal .sheet .pad{ padding:16px; }
-
-/* Asegura que el texto largo se lea bien */
-.modal .sheet .reason{
-  display:block !important;
-  margin-top:12px;
-  border:1px solid var(--ring); border-radius:8px;
-  padding:10px 12px; background:#fff;
-  white-space:pre-wrap; word-break:break-word;
-  max-height:unset !important; overflow:visible !important;
-}
-
-/* Responsive móvil */
-@media (max-width:640px){
-  .modal{ padding:10px; }
-  .modal .sheet{ width:96vw; max-height:86vh; border-radius:10px; }
-  .modal .close{ top:8px; right:8px; }
-  .modal .sheet .pad{ padding:14px; }
-  .modal .sheet .thumb{
-    aspect-ratio: 4/3;        /* un poco más alta en móvil para que se vea bien */
-    max-height:36vh;
   }
-}
-  /* Ajustes móviles generales */
-@media (max-width:640px){
-  .container{ padding:16px; }
-  .section{ padding:28px 16px; }
-  .trust{ gap:22px; }
-  .trust h2{ font-size:32px; line-height:1.15; }
-  .cards{ grid-template-columns:1fr !important; }  /* 1 columna segura */
-  .btn-primary, .btn-outline{ padding:10px 14px; font-weight:700; }
-  #productSearch{ padding:11px 12px; }
-}
-</style>
-  <style>
-/* ===== Base adaptativa (sin tocar tu HTML/JS) ===== */
 
-/* Tipos y contenedor fluidos */
-:root{
-  --step--1: 14px;
-  --step-0: 16px;
-  --step-1: clamp(18px, 2.2vw, 20px);
-  --step-2: clamp(22px, 3.5vw, 32px);
-  --step-3: clamp(28px, 4.5vw, 40px);
-}
-body{ font-size: var(--step-0); }
-h1{ font-size: var(--step-3); line-height: 1.15; }
-h2{ font-size: var(--step-2); line-height: 1.15; }
-h3{ font-size: clamp(20px, 2.6vw, 28px); }
+  /* Toast aviso corto */
+  .toast{
+    position:fixed; right:20px; bottom:20px;
+    background:#111827; color:#fff; 
+    padding:10px 14px; border-radius:10px;
+    box-shadow:0 8px 24px rgba(0,0,0,.25);
+    opacity:0; transform:translateY(10px);
+    transition:opacity .25s ease, transform .25s ease;
+    z-index:70; pointer-events:none; font-size:14px;
+  }
+  .toast.show{ opacity:1; transform:translateY(0); }
 
-.container{ width:min(1120px, 100%); margin:0 auto; padding-inline:20px; }
+  /* ===== Ajustes responsive extra (sin tocar lo de escritorio) ===== */
+  /* Tablet y abajo */
+  @media (max-width: 960px){
+    .trust{ grid-template-columns:1fr; gap:18px; padding:28px 20px; }
+    #destacado .trust{ margin-top:0 !important; padding-top:18px !important; padding-bottom:28px !important; }
+    .hero-top{ padding:28px 16px 32px; }
+    .section{ padding:28px 16px; }
+    .products-toolbar{ top:66px; }
+  }
+  /* Móvil */
+  @media (max-width:640px){
+    /* Hero más contenido */
+    .hero-top h1{ font-size:28px; line-height:1.25; }
+    .label{ font-size:11px; }
 
-/* Imagen destacada: que no se desborde */
-#destacado .trust .hero-frame img{ width:100%; height:auto; display:block; }
+    /* Bloque 5★ a una columna, imagen grande y flechas superpuestas */
+    #destacado .trust{
+      grid-template-columns:1fr !important;
+      gap:16px;
+      padding-top:16px !important;
+      padding-bottom:24px !important;
+      margin-top:0 !important;
+    }
+    #destacado .trust h2{
+      font-size:28px;
+      line-height:1.25;
+      margin:0;
+      text-align:left;
+    }
+    #destacado .trust p{ font-size:16px; margin:8px 0 0; }
+    #destacado .trust .hero-frame{ width:100%; aspect-ratio:1/1; margin:0; }
+    #destacado .carousel-controls{
+      position:absolute; left:12px; bottom:12px; z-index:2; margin:0;
+    }
+    #destacado .carousel-controls button{ width:36px; height:36px; border-radius:8px; }
 
-/* MODAL más cómodo en móvil */
-.modal .sheet{
-  width: min(720px, 92%);
-  max-height: 88vh;
-  overflow:auto;
-}
-.modal .sheet .pad{ padding:16px; }
-.modal .sheet .reason{
-  display:block !important;
-  max-height:none !important;
-  overflow:visible !important;
-  white-space:pre-wrap;
-}
+    /* Cartas y botones */
+    .cards{ grid-template-columns:1fr !important; gap:18px; }
+    .btn-primary, .btn-outline{ padding:10px 14px; font-weight:700; }
+    #productSearch{ padding:11px 12px; }
 
-/* Cartas: quepa bien el contenido */
-.cards{ gap: 18px; }
-.card .pad{ padding:14px; }
-.card h4{ margin:4px 0 6px; }
-.sub{ font-size: var(--step--1); }
+    /* Modal cómodo en móvil */
+    .modal{ padding:10px; }
+    .modal .sheet{ width:96vw; max-height:86vh; border-radius:10px; }
+    .modal .sheet .thumb{ aspect-ratio:4/3; max-height:36vh; object-fit:cover; }
+  }
 
-/* Barra de búsqueda: que no tape cosas */
-.products-toolbar{ top: 72px; }
-
-/* ===== Puntos de corte ===== */
-
-/* Tablet y abajo */
-@media (max-width: 960px){
-  .trust{ grid-template-columns:1fr; gap:18px; padding:28px 20px; }
-  #destacado .trust{ margin-top:0 !important; padding-top:18px !important; padding-bottom:28px !important; }
-  .hero-top{ padding:28px 16px 32px; }
-  .section{ padding:28px 16px; }
-  .products-toolbar{ top:66px; }
-}
-
-/* Móvil */
-@media (max-width: 640px){
-  .cards{ grid-template-columns: 1fr; }
-  .trust h2{ font-size: clamp(22px, 6vw, 28px); }
-  .trust p{ font-size: 16px; }
-  .stars{ transform: scale(.95); transform-origin:left; }
-  nav{ gap: 14px; }
-  .hero-top h1{ font-size: clamp(24px, 7vw, 30px); }
-  #productSearch{ padding:10px 12px; }
-}
+  /* Modal de producto (compacto y responsive) */
+  .modal{
+    position:fixed; inset:0;
+    display:none; align-items:center; justify-content:center;
+    background:rgba(0,0,0,.45); z-index:60; padding:16px;
+  }
+  .modal.open{ display:flex; }
+  .modal .sheet{
+    width:min(680px, 92vw);
+    max-height:82vh;
+    background:#fff; border-radius:12px; overflow:auto;
+    box-shadow:0 10px 40px rgba(0,0,0,.25);
+  }
+  .modal .close{
+    position:absolute; top:10px; right:10px;
+    background:#fff; border:1px solid var(--ring);
+    border-radius:10px; padding:6px 10px; cursor:pointer; font-weight:700;
+  }
+  .modal .sheet .thumb{
+    width:100%; height:auto; display:block;
+    border-bottom:1px solid var(--ring);
+    aspect-ratio:16/9; object-fit:cover;
+    max-height:40vh;
+  }
+  .modal .sheet .pad{ padding:16px; }
+  .modal .sheet .reason{
+    display:block !important; margin-top:12px;
+    border:1px solid var(--ring); border-radius:8px; padding:10px 12px;
+    background:#fff; white-space:pre-wrap; word-break:break-word;
+    max-height:unset !important; overflow:visible !important;
+  }
 </style>
 </head>
-
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <body>
 <header>
@@ -314,6 +236,9 @@ h3{ font-size: clamp(20px, 2.6vw, 28px); }
     </nav>
   </div>
 </header>
+
+<!-- Toast (avisos) -->
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <main id="inicio">
   <section class="hero-top">
@@ -412,6 +337,12 @@ h3{ font-size: clamp(20px, 2.6vw, 28px); }
   <footer><div class="foot"><p>© <span id="year"></span> Recomendaciones Go2 — por Sebastián Ferragut</p></div></footer>
 </main>
 
+<!-- Modal de producto -->
+<div id="productModal" class="modal" aria-hidden="true">
+  <div class="sheet"></div>
+  <button type="button" class="close" aria-label="Cerrar">✕</button>
+</div>
+
 <script>
 if (new URLSearchParams(location.search).get('success') === '1'){
   const ok = document.getElementById('ok'); if(ok) ok.style.display = 'block';
@@ -474,7 +405,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
   const grid = document.querySelector('.cards');
   const emptyNote = document.getElementById('emptyProductsMsg');
   try {
-  const res = await fetch('/assets/products.json', { cache: 'no-store' });
+    const res = await fetch('/assets/products.json', { cache: 'no-store' });
     const items = res.ok ? await res.json() : [];
     if (!items.length) {
       if (emptyNote) emptyNote.style.display = 'block';
@@ -485,16 +416,16 @@ document.getElementById('year').textContent = new Date().getFullYear();
     items.forEach(p => {
       const art = document.createElement('article');
       art.className = 'card';
-    art.id = `prod-${p.slug}`;
-     art.innerHTML = `
-  <img class="thumb" src="${p.image || ''}" alt="${p.title || ''}">
-  <div class="pad">
-    <h4>${p.title || ''}</h4>
-    <div class="sub">${p.summary || ''}</div>
-    <a class="buy" href="${p.buy_url || '#'}" target="_blank" rel="nofollow noopener">Comprar en Amazon</a>
-    <div class="reason" id="why-${p.slug}" style="display:block">${p.why || ''}</div>
-  </div>
-`;
+      art.id = `prod-${p.slug}`;
+      art.innerHTML = `
+        <img class="thumb" src="${p.image || ''}" alt="${p.title || ''}">
+        <div class="pad">
+          <h4>${p.title || ''}</h4>
+          <div class="sub">${p.summary || ''}</div>
+          <a class="buy" href="${p.buy_url || '#'}" target="_blank" rel="nofollow noopener">Comprar en Amazon</a>
+          <div class="reason" id="why-${p.slug}" style="display:block">${p.why || ''}</div>
+        </div>
+      `;
 
       // Estrellas
       const fill = Math.max(0, Math.min(100, (p.rating/5)*100));
@@ -510,28 +441,6 @@ document.getElementById('year').textContent = new Date().getFullYear();
       if (pad && sub) pad.insertBefore(stars, sub);
 
       grid && grid.appendChild(art);
-
-     
-      const link  = art.querySelector('.why');
-      const panel = art.querySelector('.reason');
-      if (link && panel) {
-        panel.style.display = 'none';
-        link.setAttribute('aria-expanded','false');
-
-        link.addEventListener('click', (e) => {
-          e.preventDefault();
-
-          // Cierra otros
-          document.querySelectorAll('.card .reason').forEach(r=>{
-            if (r !== panel) r.style.display = 'none';
-          });
-
-          const abrir = panel.style.display !== 'block';
-          panel.style.display = abrir ? 'block' : 'none';
-          link.setAttribute('aria-expanded', abrir ? 'true' : 'false');
-          if (abrir) panel.scrollIntoView({ block:'nearest', behavior:'smooth' });
-        });
-      }
     });
 
     window.__products = items;
@@ -609,7 +518,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
     function show(n){
       i = (n + slides.length) % slides.length;
       img.src = slides[i].src;
-      // No tocamos href del botón: el comportamiento lo controlamos en el click
+      // el botón no cambia href; manejamos todo en el click
     }
 
     prev.addEventListener('click', (e)=>{ e.preventDefault(); if (slides.length>1) show(i-1); });
@@ -659,11 +568,11 @@ document.getElementById('year').textContent = new Date().getFullYear();
   const renderSuggestions = (hits) => {
     if (!hits.length) { clearSuggestions(); return; }
     list.innerHTML = hits.slice(0,6).map(h => (
-  `<li role="option" data-id="${h.id}">
-     <span class="title">${h.ttl}</span>
-     <span class="sub">${h.sub}</span>
-   </li>`
-)).join('');
+      `<li role="option" data-id="${h.id}">
+         <span class="title">${h.ttl}</span>
+         <span class="sub">${h.sub}</span>
+       </li>`
+    )).join('');
     list.style.display = 'block';
   };
 
@@ -702,11 +611,4 @@ document.getElementById('year').textContent = new Date().getFullYear();
 })();
 </script>
 </body>
-  <style>
-
-  <div id="productModal" class="modal" aria-hidden="true">
-  <div class="sheet"></div>
-  <button type="button" class="close" aria-label="Cerrar">✕</button>
-</div>
-  </body>
 </html>
