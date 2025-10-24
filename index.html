@@ -65,8 +65,14 @@
   .card h4{font-size:18px;margin:4px 0}
   .sub{color:var(--muted);font-size:14px}
   .buy{display:inline-block;margin-top:10px;background:var(--ink);color:#fff;padding:10px 14px;border-radius:6px;text-decoration:none;font-weight:700}
-  .why{display:inline-block;margin-top:10px;border:1px solid var(--ring);padding:8px 12px;border-radius:6px;text-decoration:none;font-weight:600;color:var(--ink)}
-  .why + .reason{display:none;margin-top:10px;background:#fbfbfb;border:1px dashed var(--ring);padding:10px;border-radius:6px;font-size:14px}
+  .why{display:none !important;}
+  .card .reason{
+  display:block !important;
+  white-space:pre-wrap;
+  word-break:break-word;
+  max-height:none !important;
+  overflow:visible !important;
+}
   .criteria{background:#f6f6f6;border-top:1px solid var(--ring);border-bottom:1px solid var(--ring)}
   .criteria .inner{max-width:960px;margin:0 auto;padding:40px 20px;text-align:center}
   .criteria h3{font-size:28px;margin:0 0 10px}
@@ -323,7 +329,8 @@ document.getElementById('year').textContent = new Date().getFullYear();
   const grid = document.querySelector('.cards');
   const emptyNote = document.getElementById('emptyProductsMsg');
   try {
-    const res = await fetch('/assets/products.json', { cache: 'no-store' });
+   - const res = await fetch('/assets/products.json', { cache: 'no-store' });
++ const res = await fetch('/content/products/products.json', { cache: 'no-store' });
     const items = res.ok ? await res.json() : [];
     if (!items.length) {
       if (emptyNote) emptyNote.style.display = 'block';
@@ -341,8 +348,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
           <h4>${p.title || ''}</h4>
           <div class="sub">${p.summary || ''}</div>
           <a class="buy" href="${p.buy_url || '#'}" target="_blank" rel="nofollow noopener">Comprar en Amazon</a>
-          <a class="why" data-open="why-${p.slug}" href="#why-${p.slug}">Ver por qué lo recomiendo</a>
-          <div class="reason" id="why-${p.slug}">${p.why || ''}</div>
+          <div class="reason" id="why-${p.slug}" style="display:block">${p.why || ''}</div>
         </div>
       ;
 
@@ -361,7 +367,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
 
       grid && grid.appendChild(art);
 
-      // Acordeón bajo el botón (texto completo)
+     
       const link  = art.querySelector('.why');
       const panel = art.querySelector('.reason');
       if (link && panel) {
@@ -588,10 +594,23 @@ document.getElementById('year').textContent = new Date().getFullYear();
   border-radius: 8px;
   padding: 10px 12px;
   background: #fff;
-  white-space: normal !important;
+  white-space: pre-line; !important;
   word-break: break-word;
   max-height: none !important;
   overflow: visible !important;
+  white-space: pre-wrap;
 }
 </style>
+  .card .reason{
+  display:block !important;
+  margin-top:12px;
+  border:1px solid var(--ring);
+  border-radius:8px;
+  padding:10px 12px;
+  background:#fff;
+  white-space:pre-wrap;      /* respeta saltos de línea y muestra todo */
+  word-break:break-word;
+  max-height:none !important;
+  overflow:visible !important;
+}
 </html>
