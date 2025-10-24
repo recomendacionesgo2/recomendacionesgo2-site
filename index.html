@@ -404,7 +404,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
 })();
 </script>
 
-<!-- Carrusel destacado (simple y robusto) -->
+<!-- Carrusel destacado (con modal) -->
 <script>
 (function(){
   const img  = document.querySelector('#destacado .hero-frame img');
@@ -415,7 +415,6 @@ document.getElementById('year').textContent = new Date().getFullYear();
 
   if (!img || !prev || !next) return;
 
-  // Espera a que aparezca la primera tarjeta de producto
   function whenProductsReady(done){
     const grid = document.querySelector('.cards');
     if (!grid) return;
@@ -427,12 +426,28 @@ document.getElementById('year').textContent = new Date().getFullYear();
     mo.observe(grid, { childList:true, subtree:true });
   }
 
+  function openModal(targetId){
+    const m = document.getElementById('productModal');
+    const sheet = m?.querySelector('.sheet');
+    if(!m || !sheet) return;
+    const card = document.getElementById(targetId);
+    if(!card) return;
+
+    sheet.innerHTML = card.innerHTML;   // reutilizamos la tarjeta tal cual
+    m.classList.add('open');
+    m.setAttribute('aria-hidden','false');
+
+    const close = m.querySelector('.close');
+    const hide = ()=>{ m.classList.remove('open'); m.setAttribute('aria-hidden','true'); };
+    close?.addEventListener('click', hide, { once:true });
+    m.addEventListener('click', (e)=>{ if(e.target===m) hide(); }, { once:true });
+  }
+
   whenProductsReady(()=>{
     const firstCard = document.querySelector('.cards article.card');
     const firstImg  = firstCard?.querySelector('img.thumb')?.getAttribute('src') || null;
     const firstId   = firstCard?.id || null;
 
-    // Siempre tenemos la diapositiva de instrucciones + (si existe) la del primer producto
     const slides = [
       { src: '/images/uploads/hero-5estrellas.png', targetId: firstId },
       ...(firstImg ? [{ src: firstImg, targetId: firstId }] : [])
@@ -445,20 +460,23 @@ document.getElementById('year').textContent = new Date().getFullYear();
       if (btn && slides[i].targetId) btn.setAttribute('href', '#' + slides[i].targetId);
     }
 
-    // Controles
     prev.onclick = (e)=>{ e.preventDefault(); if (slides.length > 1) show(i - 1); };
     next.onclick = (e)=>{ e.preventDefault(); if (slides.length > 1) show(i + 1); };
 
-    // Botón "Ver producto destacado"
     btn?.addEventListener('click', (e)=>{
       const id = slides[i].targetId;
-      if (id){
-        e.preventDefault();
-        document.getElementById(id)?.scrollIntoView({ behavior:'smooth', block:'start' });
-      }
+      if (!id) return;
+      e.preventDefault();
+
+      // ¿El héroe (imagen) está visible en pantalla? -> abre modal
+      const r = img.getBoundingClientRect();
+      const visible = r.top < window.innerHeight && r.bottom > 0;
+      if (visible) { openModal(id); return; }
+
+      // Si no, baja hasta la ficha como antes
+      document.getElementById(id)?.scrollIntoView({ behavior:'smooth', block:'start' });
     });
 
-    // Primer render
     show(0);
   });
 })();
