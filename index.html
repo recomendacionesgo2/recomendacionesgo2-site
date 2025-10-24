@@ -476,14 +476,14 @@ document.getElementById('year').textContent = new Date().getFullYear();
     prev.onclick = (e)=>{ e.preventDefault(); if (slides.length > 1) show(i - 1); };
     next.onclick = (e)=>{ e.preventDefault(); if (slides.length > 1) show(i + 1); };
 
-   btn?.addEventListener('click', (e)=>{
+   btnDest.addEventListener('click', (e)=>{
   e.preventDefault();
 
   // slide actual
   const slide = slides[i];
   const id = slide?.targetId || null;
 
-  // función toast
+  // Toast corto
   const showToast = (msg)=>{
     const t = document.getElementById('toast');
     if(!t) return;
@@ -492,20 +492,21 @@ document.getElementById('year').textContent = new Date().getFullYear();
     setTimeout(()=> t.classList.remove('show'), 2600);
   };
 
-  // Si estamos en la lámina de instrucciones (5★) sin targetId -> aviso y no hace nada
+  // Si estamos en la lámina 5★ (sin producto asociado), NO cambiar de slide
   if (!id){
     showToast('Para ver productos 5★, usa las flechas y selecciona uno.');
     return;
   }
 
-  // ¿El héroe está visible? -> modal; si no, scroll a la tarjeta
+  // Si el héroe está visible -> abre modal; si no, hace scroll a la tarjeta
   const r = img.getBoundingClientRect();
   const visible = r.top < window.innerHeight && r.bottom > 0;
-  if (visible) { openModal(id); return; }
-
-  document.getElementById(id)?.scrollIntoView({ behavior:'smooth', block:'start' });
+  if (visible) {
+    openModal(id);
+  } else {
+    document.getElementById(id)?.scrollIntoView({ behavior:'smooth', block:'start' });
+  }
 });
-
     show(0);
   });
 })();
