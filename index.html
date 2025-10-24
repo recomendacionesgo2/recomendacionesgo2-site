@@ -65,8 +65,14 @@
   .card h4{font-size:18px;margin:4px 0}
   .sub{color:var(--muted);font-size:14px}
   .buy{display:inline-block;margin-top:10px;background:var(--ink);color:#fff;padding:10px 14px;border-radius:6px;text-decoration:none;font-weight:700}
-  .why{display:inline-block;margin-top:10px;border:1px solid var(--ring);padding:8px 12px;border-radius:6px;text-decoration:none;font-weight:600;color:var(--ink)}
-  .why + .reason{display:none;margin-top:10px;background:#fbfbfb;border:1px dashed var(--ring);padding:10px;border-radius:6px;font-size:14px}
+  .why{display:none !important;}
+  .card .reason{
+  display:block !important;
+  white-space:pre-wrap;
+  word-break:break-word;
+  max-height:none !important;
+  overflow:visible !important;
+}
   .criteria{background:#f6f6f6;border-top:1px solid var(--ring);border-bottom:1px solid var(--ring)}
   .criteria .inner{max-width:960px;margin:0 auto;padding:40px 20px;text-align:center}
   .criteria h3{font-size:28px;margin:0 0 10px}
