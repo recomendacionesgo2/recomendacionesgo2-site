@@ -341,15 +341,15 @@ document.getElementById('year').textContent = new Date().getFullYear();
       const art = document.createElement('article');
       art.className = 'card';
      art.id = `prod-${p.slug}`;
-      art.innerHTML = 
-        <img class="thumb" src="${p.image || ''}" alt="${p.title || ''}">
-        <div class="pad">
-          <h4>${p.title || ''}</h4>
-          <div class="sub">${p.summary || ''}</div>
-          <a class="buy" href="${p.buy_url || '#'}" target="_blank" rel="nofollow noopener">Comprar en Amazon</a>
-          <div class="reason" id="why-${p.slug}" style="display:block">${p.why || ''}</div>
-        </div>
-      ;
+      art.innerHTML = `
+  <img class="thumb" src="${p.image || ''}" alt="${p.title || ''}">
+  <div class="pad">
+    <h4>${p.title || ''}</h4>
+    <div class="sub">${p.summary || ''}</div>
+    <a class="buy" href="${p.buy_url || '#'}" target="_blank" rel="nofollow noopener">Comprar en Amazon</a>
+    <div class="reason" id="why-${p.slug}" style="display:block">${p.why || ''}</div>
+  </div>
+`;
 
       // Estrellas
       const fill = Math.max(0, Math.min(100, (p.rating/5)*100));
