@@ -439,7 +439,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
 
     const featuredSlides = items
       .filter(p => !!p.featured && p.image && p.slug)
-      .map(p => ({ src: p.image, targetId: prod-${p.slug} }));
+      .map(p => ({ src: p.image, targetId: `prod-${p.slug}` }));
 
     if (!featuredSlides.length && items.length){
       const top = items.slice().sort((a,b)=>{
