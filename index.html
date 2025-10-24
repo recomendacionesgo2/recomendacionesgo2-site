@@ -520,12 +520,12 @@ document.getElementById('year').textContent = new Date().getFullYear();
   const clearSuggestions = () => { list.innerHTML = ''; list.style.display = 'none'; };
   const renderSuggestions = (hits) => {
     if (!hits.length) { clearSuggestions(); return; }
-    list.innerHTML = hits.slice(0,6).map(h=>(
-      <li role="option" data-id="${h.id}">
-         <span class="title">${h.ttl}</span>
-         <span class="sub">${h.sub}</span>
-       </li>
-    )).join('');
+    list.innerHTML = hits.slice(0,6).map(h => (
+  `<li role="option" data-id="${h.id}">
+     <span class="title">${h.ttl}</span>
+     <span class="sub">${h.sub}</span>
+   </li>`
+)).join('');
     list.style.display = 'block';
   };
 
