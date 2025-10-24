@@ -333,7 +333,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
     items.forEach(p => {
       const art = document.createElement('article');
       art.className = 'card';
-     art.id = `prod-${p.slug}`;
+    art.id = `prod-${p.slug}`;
       art.innerHTML = `
   <img class="thumb" src="${p.image || ''}" alt="${p.title || ''}">
   <div class="pad">
