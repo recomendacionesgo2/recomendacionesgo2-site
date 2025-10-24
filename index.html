@@ -322,7 +322,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
   const grid = document.querySelector('.cards');
   const emptyNote = document.getElementById('emptyProductsMsg');
   try {
-   const res = await fetch('/content/products/products.json', { cache: 'no-store' });
+  const res = await fetch('/content/products/products.json', { cache: 'no-store' });
     const items = res.ok ? await res.json() : [];
     if (!items.length) {
       if (emptyNote) emptyNote.style.display = 'block';
