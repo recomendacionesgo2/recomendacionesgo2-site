@@ -479,18 +479,18 @@ document.getElementById('year').textContent = new Date().getFullYear();
    btnDest.addEventListener('click', (e)=>{
   e.preventDefault();
 
-  // slide actual
   const slide = slides[i];
-  const id = slide?.targetId || null;
+  const id = slide?.targetId || null; // p.ej. "prod-router-4g..."
 
-  // Toast corto
-  const showToast = (msg)=>{
-    const t = document.getElementById('toast');
-    if(!t) return;
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(()=> t.classList.remove('show'), 2600);
-  };
+  // Aviso si estamos en la lámina 5★ (sin producto asociado)
+  if (!id){
+    showToast('Para ver productos 5★, usa las flechas y selecciona uno.');
+    return;
+  }
+
+  // Siempre abrir modal del producto (sin scroll)
+  openModal(id);
+});
 
   // Si estamos en la lámina 5★ (sin producto asociado), NO cambiar de slide
   if (!id){
