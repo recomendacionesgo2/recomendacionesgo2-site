@@ -398,100 +398,63 @@ document.getElementById('year').textContent = new Date().getFullYear();
 })();
 </script>
 
-<!-- Carrusel destacado (sin tocar diseño) -->
+<!-- Carrusel destacado (simple y robusto) -->
 <script>
 (function(){
-  function waitFor(cond, timeout=8000, interval=60){
-    return new Promise((res, rej)=>{
-      const t0 = Date.now();
-      (function loop(){
-        try{ if (cond()) return res(true); }catch(_){}
-        if (Date.now() - t0 > timeout) return rej(new Error('timeout'));
-        setTimeout(loop, interval);
-      })();
+  const img  = document.querySelector('#destacado .hero-frame img');
+  const prev = document.getElementById('prevFeat');
+  const next = document.getElementById('nextFeat');
+  const btn  = Array.from(document.querySelectorAll('a,button'))
+    .find(el => el.textContent && el.textContent.trim() === 'Ver producto destacado');
+
+  if (!img || !prev || !next) return;
+
+  // Espera a que aparezca la primera tarjeta de producto
+  function whenProductsReady(done){
+    const grid = document.querySelector('.cards');
+    if (!grid) return;
+    const firstThumb = grid.querySelector('img.thumb');
+    if (firstThumb) { done(); return; }
+    const mo = new MutationObserver(()=>{
+      if (grid.querySelector('img.thumb')) { mo.disconnect(); done(); }
     });
+    mo.observe(grid, { childList:true, subtree:true });
   }
 
-  waitFor(()=> window.__products && document.querySelector('#destacado .hero-frame img') && document.querySelector('.cards'))
-  .then(init)
-  .catch(()=>{});
+  whenProductsReady(()=>{
+    const firstCard = document.querySelector('.cards article.card');
+    const firstImg  = firstCard?.querySelector('img.thumb')?.getAttribute('src') || null;
+    const firstId   = firstCard?.id || null;
 
-  function init(){
-    const img = document.querySelector('#destacado .hero-frame img');
-    if (!img) return;
-
-    const btnDest = Array.from(document.querySelectorAll('a,button'))
-      .find(el => el.textContent && el.textContent.trim() === 'Ver producto destacado');
-
-    let prev = document.getElementById('prevFeat');
-    let next = document.getElementById('nextFeat');
-
-    if (!prev || !next){
-      const ctrl = document.querySelector('.carousel-controls');
-      if (ctrl){
-        const btns = ctrl.querySelectorAll('button');
-        if (btns.length >= 2){ prev = btns[0]; next = btns[1]; }
-      }
-    }
-
-    const items = (window.__products || []).slice();
-
-    const instructionSrc = img.getAttribute('src') || '/images/uploads/hero-5estrellas.png';
-
-    const featuredSlides = items
-      .filter(p => !!p.featured && p.image && p.slug)
-     .map(p => ({ src: p.image, targetId: `prod-${p.slug}` }));
-
-    if (!featuredSlides.length && items.length){
-      const top = items.slice().sort((a,b)=>{
-        if (b.rating !== a.rating) return b.rating - a.rating;
-        return (b.date || '').localeCompare(a.date || '');
-      })[0];
-      if (top && top.image && top.slug){
-        featuredSlides.push({ src: top.image, targetId: prod-${top.slug} });
-      }
-    }
-
-    let slides = [];
-    if (instructionSrc) slides.push({ src: instructionSrc, targetId: featuredSlides[0]?.targetId || null });
-    slides = slides.concat(featuredSlides);
-    if (!slides.length) return;
-
-    slides.forEach(s => { const im = new Image(); im.src = s.src; });
+    // Siempre tenemos la diapositiva de instrucciones + (si existe) la del primer producto
+    const slides = [
+      { src: '/images/uploads/hero-5estrellas.png', targetId: firstId },
+      ...(firstImg ? [{ src: firstImg, targetId: firstId }] : [])
+    ];
 
     let i = 0;
-    let currentTargetId = slides[i].targetId;
-
     function show(n){
       i = (n + slides.length) % slides.length;
       img.src = slides[i].src;
-      currentTargetId = slides[i].targetId || null;
-      if (btnDest && currentTargetId) btnDest.setAttribute('href', #${currentTargetId});
+      if (btn && slides[i].targetId) btn.setAttribute('href', '#' + slides[i].targetId);
     }
 
-    show(0);
+    // Controles
+    prev.onclick = (e)=>{ e.preventDefault(); if (slides.length > 1) show(i - 1); };
+    next.onclick = (e)=>{ e.preventDefault(); if (slides.length > 1) show(i + 1); };
 
-    if (prev) prev.onclick = e => { e.preventDefault(); show(i - 1); };
-    if (next) next.onclick = e => { e.preventDefault(); show(i + 1); };
-
-    if (btnDest){
-      btnDest.addEventListener('click', (e)=>{
+    // Botón "Ver producto destacado"
+    btn?.addEventListener('click', (e)=>{
+      const id = slides[i].targetId;
+      if (id){
         e.preventDefault();
-        if (!currentTargetId && featuredSlides.length){
-          show(1 % slides.length);
-          setTimeout(()=>{
-            const node = document.getElementById(slides[i].targetId);
-            if (node) node.scrollIntoView({ behavior:'smooth', block:'start' });
-          }, 50);
-          return;
-        }
-        if (currentTargetId){
-          const node = document.getElementById(currentTargetId);
-          if (node) node.scrollIntoView({ behavior:'smooth', block:'start' });
-        }
-      });
-    }
-  }
+        document.getElementById(id)?.scrollIntoView({ behavior:'smooth', block:'start' });
+      }
+    });
+
+    // Primer render
+    show(0);
+  });
 })();
 </script>
 
