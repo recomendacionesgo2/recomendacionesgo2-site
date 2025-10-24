@@ -13,6 +13,6 @@ why: "Hace algo más de un mes que tengo esta sierra y la verdad es que estoy
   que hacer, y lo hace bien."
 rating: 4.8
 featured: false
-draft: true
+draft: false
 date: 2025-10-20
 ---
