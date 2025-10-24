@@ -476,19 +476,35 @@ document.getElementById('year').textContent = new Date().getFullYear();
     prev.onclick = (e)=>{ e.preventDefault(); if (slides.length > 1) show(i - 1); };
     next.onclick = (e)=>{ e.preventDefault(); if (slides.length > 1) show(i + 1); };
 
-    btn?.addEventListener('click', (e)=>{
-      const id = slides[i].targetId;
-      if (!id) return;
-      e.preventDefault();
+   btn?.addEventListener('click', (e)=>{
+  e.preventDefault();
 
-      // ¿El héroe (imagen) está visible en pantalla? -> abre modal
-      const r = img.getBoundingClientRect();
-      const visible = r.top < window.innerHeight && r.bottom > 0;
-      if (visible) { openModal(id); return; }
+  // slide actual
+  const slide = slides[i];
+  const id = slide?.targetId || null;
 
-      // Si no, baja hasta la ficha como antes
-      document.getElementById(id)?.scrollIntoView({ behavior:'smooth', block:'start' });
-    });
+  // función toast
+  const showToast = (msg)=>{
+    const t = document.getElementById('toast');
+    if(!t) return;
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(()=> t.classList.remove('show'), 2600);
+  };
+
+  // Si estamos en la lámina de instrucciones (5★) sin targetId -> aviso y no hace nada
+  if (!id){
+    showToast('Para ver productos 5★, usa las flechas y selecciona uno.');
+    return;
+  }
+
+  // ¿El héroe está visible? -> modal; si no, scroll a la tarjeta
+  const r = img.getBoundingClientRect();
+  const visible = r.top < window.innerHeight && r.bottom > 0;
+  if (visible) { openModal(id); return; }
+
+  document.getElementById(id)?.scrollIntoView({ behavior:'smooth', block:'start' });
+});
 
     show(0);
   });
