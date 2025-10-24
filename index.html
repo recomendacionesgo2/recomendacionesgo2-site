@@ -465,7 +465,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
       i = (n + slides.length) % slides.length;
       img.src = slides[i].src;
       currentTargetId = slides[i].targetId || null;
-      if (btnDest && currentTargetId) btnDest.setAttribute('href', #${currentTargetId});
+      if (btnDest && currentTargetId) btnDest.setAttribute('href', '#' + currentTargetId);
     }
 
     show(0);
