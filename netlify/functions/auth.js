@@ -2,7 +2,7 @@ import fetch from "node-fetch";
 
 export async function handler(event) {
   const client_id = "0v231ihBC5sFL2kZZ5ap"; // tu Client ID
-  const client_secret = "PON_AQUI_TU_CLIENT_SECRET"; // ⚠️ sustituye por tu Client Secret real
+  const client_secret = "99f71c44476148f053e6c07ad6c386b410e7d763"; // ⚠️ sustituye por tu Client Secret real
   const code = event.queryStringParameters.code;
 
   if (!code) {
