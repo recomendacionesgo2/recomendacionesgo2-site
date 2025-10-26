@@ -1,10 +1,11 @@
-backend:
+bbackend:
   name: github
   repo: generacion-o2/RecomendacionesGo2_v3.3.7
   branch: main
-  auth_scope: repo
-  open_authoring: true
-
+  base_url: https://recomendaciones.generacion-o2.org
+  auth_endpoint: /api/auth
+  publish_mode: editorial_workflow
+  
 media_folder: "images/uploads"
 public_folder: "/images/uploads"
 
