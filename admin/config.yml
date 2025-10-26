@@ -1,6 +1,9 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: generacion-o2/RecomendacionesGo2_v3.3.7
   branch: main
+  auth_scope: repo
+  open_authoring: true
 
 media_folder: "images/uploads"
 public_folder: "/images/uploads"
